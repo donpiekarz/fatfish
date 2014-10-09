@@ -1,0 +1,15 @@
+#!/usr/bin/escript
+
+loop()->
+    receive
+        done ->
+            ok;
+        _Any ->
+            loop()
+    end.
+
+main(_Options) ->
+    io:fwrite("main sie zglasza~n", []),
+    application:start(fatfish),
+    loop(),
+    ok.

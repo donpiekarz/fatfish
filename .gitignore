@@ -1,0 +1,11 @@
+# emacs
+*~
+
+# erlang
+*.beam
+/ebin/*.app
+/doc
+*.plt
+
+# rebar
+.rebar/

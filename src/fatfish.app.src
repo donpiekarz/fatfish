@@ -1,0 +1,9 @@
+
+{application, fatfish, [
+                        {description, "receive, encrypt, send email service"},
+{vsn, "0.0.1"}, % remember about `overview.edoc'
+{registered, []},
+{applications, [kernel, stdlib]},
+{mod, {fatfish_app, []}},
+{env, []}
+]}.
