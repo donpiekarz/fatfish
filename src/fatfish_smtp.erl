@@ -68,10 +68,14 @@ handle_MAIL_extension(Extension, _State) ->
 
 handle_RCPT(<<"nobody@example.com">>, State) ->
     {error, "550 No such recipient", State};
+
+handle_RCPT(<<"test@fatfish.pepiniera.net">>, State) ->
+    {ok, State};
+
 handle_RCPT(To, State) ->
     io:format("Mail to ~s~n", [To]),
                                                 % you can accept or reject RCPT TO addesses here, one per call
-    {ok, State}.
+    {error, "550 No Such User", State }.
 
 handle_RCPT_extension(<<"X-SomeExtension">> = Extension, State) ->
                                                 % any RCPT TO extensions can be handled here
@@ -83,17 +87,21 @@ handle_RCPT_extension(Extension, _State) ->
 
 handle_DATA(_From, _To, <<>>, State) ->
     {error, "552 Message too small", State};
-handle_DATA(From, To, Data, State) ->
+handle_DATA(_From, _To, Data, State) ->
     Reference = lists:flatten([io_lib:format("~2.16.0b", [X]) || <<X>> <= erlang:md5(term_to_binary(erlang:now()))]),
-    relay("alice@example.org", ["bob@example.org"], Data),
-    {ok, Reference, State}.
+    case relay("test@fatfish.pepiniera.net", ["czerwona.koparka@mailinator.com"], Data) of
+        ok ->
+            {ok, Reference, State};
+        _ ->
+            {error, "500 global error", State}
+    end.
 
 handle_RSET(State) ->
                                                 % reset any relevant internal state
     State.
 
-handle_VRFY(<<"someuser">>, State) ->
-    {ok, "someuser@"++smtp_util:guess_FQDN(), State};
+handle_VRFY(<<"test">>, State) ->
+    {ok, "test@"++smtp_util:guess_FQDN(), State};
 handle_VRFY(_Address, State) ->
     {error, "252 VRFY disabled by policy, just send some mail", State}.
 
@@ -127,7 +135,13 @@ terminate(Reason, State) ->
 relay(_, [], _) ->
     ok;
 relay(From, [To|Rest], Data) ->
-                                                % relay message to email address
     [_User, Host] = string:tokens(To, "@"),
-    gen_smtp_client:send({From, [To], erlang:binary_to_list(Data)}, [{relay, Host}]),
+    NewData = "Subject: test email\r\nFrom: <test@fatfish.pepiniera.net>\r\n\r\nThis is the email body\r\n",
+
+    Envelope = {From, [To], NewData},
+    Options = [
+               {relay, Host}
+              ],
+    Res = gen_smtp_client:send_blocking(Envelope, Options),
+    io:fwrite("send res: ~p~n", [Res]),
     relay(From, Rest, Data).
