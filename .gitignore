@@ -4,6 +4,7 @@
 # erlang
 *.beam
 /ebin/*.app
+.eunit/
 /doc
 *.plt
 
