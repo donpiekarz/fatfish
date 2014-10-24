@@ -32,6 +32,6 @@ compose_mail_test()->
             ]
         }
     ],
-    Expect = "From: <aaa@bbb.com>\r\nTo: <ccc@ddd.com>\r\nSubject: testing\r\n\r\nContent-Type: multipart/mixed; boundary=\"000SomeRandomString000\"\r\n\r\n--000SomeRandomString000\r\nHere's a picture of me\r\n\r\n\r\n--000SomeRandomString000\r\nContent-transfer-encoding: base64;\r\nContent-Type: application/octet-stream; name=\"PictureOfMe.png\"\r\n\r\nblablabla\r\n\r\n--000SomeRandomString000--\r\n",
+    Expect = "From: <aaa@bbb.com>\r\nTo: <ccc@ddd.com>\r\nSubject: testing\r\n\r\nContent-Type: multipart/mixed; boundary=\"000SomeRandomString000\"\r\n\r\n--000SomeRandomString000\r\nContent-Type: text/plain; charset=UTF-8\r\nHere's a picture of me\r\n\r\n\r\n--000SomeRandomString000\r\nContent-transfer-encoding: base64;\r\nContent-Type: application/octet-stream; name=\"PictureOfMe.png\"\r\n\r\nblablabla\r\n\r\n--000SomeRandomString000--\r\n",
     Actual = mail:compose_mail(Mail),
     ?assertEqual(Expect, Actual).

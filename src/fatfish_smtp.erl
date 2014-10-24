@@ -136,9 +136,26 @@ relay(_, [], _) ->
     ok;
 relay(From, [To|Rest], Data) ->
     [_User, Host] = string:tokens(To, "@"),
-    NewData = "Subject: test email\r\nFrom: <test@fatfish.pepiniera.net>\r\n\r\nThis is the email body\r\n",
+    %NewData = "Subject: test email\r\nFrom: <test@fatfish.pepiniera.net>\r\n\r\nThis is the email body\r\n",
+    Mail = mail:compose_mail([
+            {from, From},
+            {to, To},
+            {subject, "Mail from FatFish service"},
+            {body_mime, 
+                [
+                    {separator, "000SomeaaaRandomString000"},
+                    {body, "New mail for you"},
+                    {attchment, [
+                        {content_transfer_encoding, "base64"},
+                        {content_type, "application/octet-stream"},
+                        {name, "FatFishMail.eml"},
+                        {data, base64:encode_to_string(Data)}
+                        ]}
+                ]
+            }
+        ]),
 
-    Envelope = {From, [To], NewData},
+    Envelope = {From, [To], Mail},
     Options = [
                {relay, Host}
               ],
