@@ -1,5 +1,5 @@
 #!/usr/bin/escript
-%%! -pz /home/donpiekarz/dev/erlang/FatFish/fatfish/deps/gen_smtp/ebin/
+%%! -pz /home/donpiekarz/dev/erlang/FatFish/fatfish/ebin/ /home/donpiekarz/dev/erlang/FatFish/fatfish/deps/gen_smtp/ebin/
 
 main([]) ->
     application:start(asn1),
@@ -7,20 +7,46 @@ main([]) ->
     application:start(public_key),
     application:start(ssl),
     %io:fwrite("liby: ~p~n", [code:get_path()]),
-    From = "koparka.zolta@gmail.com",
-    To =  ["m8r-bcjpr@mailinator.com"],
-    Data = "Subject: testing\r\nFrom: Andrew Thompson \r\nTo: Some Dude <czerwona.koparka@mailinator.com> \r\n\r\nThis is the email body",
+    From = "<test@fatfish.pepiniera.net>",
+    To =  ["<koparka.czerwona@gmail.com>"],
+        Mail = [
+        {from, From},
+        {to, "<koparka.czerwona@gmail.com>"},
+        {subject, "testing"},
+        {body_mime, 
+            [
+                {separator, "000SomexxxRandomString000"},
+                {body, "Here's a picture of me"},
+                {attchment, [
+                    {content_transfer_encoding, "base64"},
+                    {content_type, "application/octet-stream"},
+                    {name, "PictureOfMe.png"},
+                    {data, "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY3growIAAycBLhVrvukAAAAASUVORK5CYII="}
+                    ]}
+            ]
+        }
+    ],
     Options = [
-               {relay, "smtp.gmail.com"},
-%               {relay, "gmail.com"},
+%               {relay, "smtp.gmail.com"},
+               {relay, "gmail.com"},
                %{relay, "smtp.googlemail.com"},
-               {username, "koparka.zolta@gmail.com"},
-               {password, "kopareczko"},
-               {auth, always},
+               %{username, "koparka.zolta@gmail.com"},
+               %{password, "kopareczko"},
+               %{auth, always},
                {tls, always}
                %{ssl, true}
                %{port, 465}
               ],
 
-    Res = gen_smtp_client:send_blocking({From, To, Data}, Options),
+    Res = gen_smtp_client:send_blocking({From, To, mail:compose_mail(Mail)}, Options),
     io:fwrite("wyjscie: ~p~n", [Res]).
+
+
+
+
+
+
+
+
+
+

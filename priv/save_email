@@ -1,0 +1,32 @@
+#!/usr/bin/escript
+%%! -pz /root/dev/erlang/FatFish/fatfish/ebin/ /root/dev/erlang/FatFish/fatfish/deps/gen_smtp/ebin/
+
+
+
+main([]) ->
+    {ok, F} = file:open("/tmp/fatfish_message.txt", [write]),
+    Mail = get_mail(),
+    io:fwrite(F,"~s", [mail:compose_mail(Mail)]).
+
+
+get_mail()->
+    From = "<test@fatfish.pepiniera.net>",
+    To =  ["<koparka.czerwona@gmail.com>"],
+    Mail = [
+	    {from, From},
+	    {to, "<koparka.czerwona@gmail.com>"},
+	    {subject, "testing"},
+	    {body_mime, 
+	     [
+	      {separator, "000SomexxxRandomString000"},
+	      {body, "Here's a picture of me"},
+	      {attchment, [
+			   {content_transfer_encoding, "base64"},
+			   {content_type, "application/octet-stream"},
+			   {name, "PictureOfMe.png"},
+			   {data, "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY3growIAAycBLhVrvukAAAAASUVORK5CYII="}
+			  ]}
+	     ]
+	    }
+	   ],
+    Mail.

@@ -89,7 +89,7 @@ handle_DATA(_From, _To, <<>>, State) ->
     {error, "552 Message too small", State};
 handle_DATA(_From, _To, Data, State) ->
     Reference = lists:flatten([io_lib:format("~2.16.0b", [X]) || <<X>> <= erlang:md5(term_to_binary(erlang:now()))]),
-    case relay("test@fatfish.pepiniera.net", ["czerwona.koparka@mailinator.com"], Data) of
+    case relay("test@fatfish.pepiniera.net", ["czerwona.koparka@gmail.com"], Data) of
         ok ->
             {ok, Reference, State};
         _ ->
@@ -136,7 +136,6 @@ relay(_, [], _) ->
     ok;
 relay(From, [To|Rest], Data) ->
     [_User, Host] = string:tokens(To, "@"),
-    %NewData = "Subject: test email\r\nFrom: <test@fatfish.pepiniera.net>\r\n\r\nThis is the email body\r\n",
     Mail = mail:compose_mail([
             {from, From},
             {to, To},
