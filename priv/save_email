@@ -1,5 +1,5 @@
 #!/usr/bin/escript
-%%! -pz /root/dev/erlang/fatfish/ebin/ /root/dev/erlang/fatfish/deps/gen_smtp/ebin/
+%%! -pz /donpiekarz/home/dev/erlang/fatfish/ebin/ /home/donpiekarz/dev/erlang/fatfish/deps/gen_smtp/ebin/
 
 
 
