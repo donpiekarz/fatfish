@@ -7,17 +7,16 @@ main([]) ->
     application:start(public_key),
     application:start(ssl),
     %io:fwrite("liby: ~p~n", [code:get_path()]),
-    From = "<test@fatfish.pepiniera.net>",
+    From = "<koparka.zolta@fatfish.pepiniera.net>",
     To =  ["<koparka.czerwona@gmail.com>"],
         Mail = [
-        {mime_version, "1.0"},
         {from, From},
         {to, "<koparka.czerwona@gmail.com>"},
         {subject, "testing"},
         {body_mime, 
             [
                 {separator, "000SomexxxRandomString000"},
-                {body, "Here's a picture of me"},
+                {body, "Here's a picture of me\r\n"},
                 {attchment, [
                     {content_transfer_encoding, "base64"},
                     {content_type, "application/octet-stream"},
@@ -28,15 +27,15 @@ main([]) ->
         }
     ],
     Options = [
-%               {relay, "smtp.gmail.com"},
-               {relay, "gmail.com"},
+               {relay, "smtp.gmail.com"},
+               %{relay, "gmail.com"},
                %{relay, "smtp.googlemail.com"},
-               %{username, "koparka.zolta@gmail.com"},
-               %{password, "kopareczko"},
-               %{auth, always},
-               {tls, always}
-               %{ssl, true}
-               %{port, 465}
+               {username, "koparka.zolta@gmail.com"},
+               {password, "kopareczko"},
+               {auth, always},
+               %{tls, always},
+               {ssl, true},
+               {port, 465}
               ],
 
     Res = gen_smtp_client:send_blocking({From, To, mail:compose_mail(Mail)}, Options),
