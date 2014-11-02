@@ -13,20 +13,21 @@ get_mail()->
     From = "<test@fatfish.pepiniera.net>",
     To =  ["<koparka.czerwona@gmail.com>"],
     Mail = [
-	    {from, From},
-	    {to, "<koparka.czerwona@gmail.com>"},
-	    {subject, "testing"},
-	    {body_mime, 
-	     [
-	      {separator, "000SomexxxRandomString000"},
-	      {body, "Here's a picture of me"},
-	      {attchment, [
-			   {content_transfer_encoding, "base64"},
-			   {content_type, "application/octet-stream"},
-			   {name, "PictureOfMe.png"},
-			   {data, "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY3growIAAycBLhVrvukAAAAASUVORK5CYII="}
-			  ]}
-	     ]
-	    }
-	   ],
+            {mime_version, "1.0"},
+            {from, From},
+            {to, "<koparka.czerwona@gmail.com>"},
+            {subject, "testing"},
+            {body_mime, 
+             [
+              {separator, "000SomexxxRandomString000"},
+              {body, "Here's a picture of me"},
+              {attchment, [
+                           {content_transfer_encoding, "base64"},
+                           {content_type, "application/octet-stream"},
+                           {name, "PictureOfMe.png"},
+                           {data, "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY3growIAAycBLhVrvukAAAAASUVORK5CYII="}
+                          ]}
+             ]
+            }
+           ],
     Mail.

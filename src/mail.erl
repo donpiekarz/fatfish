@@ -5,7 +5,7 @@
 
 
 compose_mail(Options)->
-    Fields = [from, to, subject, body, body_mime],
+    Fields = [mime_version, from, to, subject, body, body_mime],
     compose_mail(Fields, Options, "").
 
 compose_mail([Field], Options, Output)->
@@ -34,6 +34,8 @@ split_string(Str, Start, Len, Result) when Len > 0->
     PartStr = string:substr(Str, Start, LineLen),
     split_string(Str, Start + LineLen, Len - LineLen, [PartStr|Result]).
 
+dispatch_field({mime_version, Value}, Output) ->
+    Output ++ "MIME-Version: " ++ Value ++ "\r\n";
 dispatch_field({from, Value}, Output) ->
     Output ++ "From: " ++ Value ++ "\r\n";
 dispatch_field({to, Value}, Output) ->
@@ -53,7 +55,7 @@ compose_mime_field(Options, Output)->
     dispatch_mime_field(close, Separator, OutputAfterDisp).
 
 dispatch_mime_field(init, Separator, Output)->
-    Output ++ "\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"" ++ Separator ++ "\"\r\n";
+    Output ++ "\r\nContent-Type: multipart/mixed; boundary=\"" ++ Separator ++ "\"\r\n";
 dispatch_mime_field(open, Separator,  Output)->
     Output ++ "\r\n--" ++ Separator ++ "\r\n";
 dispatch_mime_field(close, Separator,  Output)->

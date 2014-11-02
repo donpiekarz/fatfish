@@ -10,6 +10,7 @@ main([]) ->
     From = "<test@fatfish.pepiniera.net>",
     To =  ["<koparka.czerwona@gmail.com>"],
         Mail = [
+        {mime_version, "1.0"},
         {from, From},
         {to, "<koparka.czerwona@gmail.com>"},
         {subject, "testing"},
