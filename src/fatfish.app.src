@@ -3,7 +3,11 @@
                         {description, "receive, encrypt, send email service"},
 {vsn, "0.0.1"}, % remember about `overview.edoc'
 {registered, []},
-{applications, [kernel, stdlib]},
+{applications, [
+                    kernel, 
+                    stdlib,
+                    gen_smtp
+]},
 {mod, {fatfish_app, []}},
 {env, []}
 ]}.

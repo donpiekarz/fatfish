@@ -11,7 +11,7 @@ start_link()->
 
 init(_Args)->
     Children = [
-                {pong,{pong, start_link, []}, permanent, 5000, worker, [pong]}
+                {fatfish_mta,{gen_smtp_server, start, [fatfish_mta]}, permanent, 5000, worker, dynamic}
     ],
     {ok,
      {
