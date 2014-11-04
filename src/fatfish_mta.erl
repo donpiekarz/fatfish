@@ -1,11 +1,11 @@
--module(fatfish_smtp).
+-module(fatfish_mta).
 
 -behaviour(gen_smtp_server_session).
 
 
 -export([init/4, handle_HELO/2, handle_EHLO/3, handle_MAIL/2, handle_MAIL_extension/2,
          handle_RCPT/2, handle_RCPT_extension/2, handle_DATA/4, handle_RSET/1, handle_VRFY/2,
-         handle_other/3, handle_AUTH/4, handle_STARTTLS/1, code_change/3, terminate/2]).
+         handle_other/3, handle_AUTH/4, handle_STARTTLS/1, code_change/3, terminate/2, relay/3]).
 
 -define(RELAY, true).
 
@@ -18,7 +18,7 @@ init(Hostname, SessionCount, Address, Options) ->
     io:format("peer: ~p~n", [Address]),
     case SessionCount > 20 of
         false ->
-            Banner = [Hostname, " ESMTP smtp_server_example"],
+            Banner = [Hostname, " ESMTP fatfish_mta"],
             State = #state{options = Options},
             {ok, Banner, State};
         true ->
@@ -89,7 +89,7 @@ handle_DATA(_From, _To, <<>>, State) ->
     {error, "552 Message too small", State};
 handle_DATA(_From, _To, Data, State) ->
     Reference = lists:flatten([io_lib:format("~2.16.0b", [X]) || <<X>> <= erlang:md5(term_to_binary(erlang:now()))]),
-    case relay("test@fatfish.pepiniera.net", ["czerwona.koparka@gmail.com"], Data) of
+    case relay("<test@fatfish.pepiniera.net>", ["koparka.czerwona@gmail.com"], Data) of
         ok ->
             {ok, Reference, State};
         _ ->
@@ -158,6 +158,6 @@ relay(From, [To|Rest], Data) ->
     Options = [
                {relay, Host}
               ],
-    Res = gen_smtp_client:send_blocking(Envelope, Options),
-    io:fwrite("send res: ~p~n", [Res]),
+    gen_smtp_client:send_blocking(Envelope, Options),
+    %io:fwrite("send res: ~p~n", [Res]),
     relay(From, Rest, Data).
