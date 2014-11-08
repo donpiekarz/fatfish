@@ -1,0 +1,6 @@
+# convert private key in p12 format to pem 
+openssl pkcs12 -in /path/to/key.p12 -out /path/to/key.pem -nodes
+
+# decrypt message 
+openssl rsautl -decrypt -inkey /path/to/key.pem < /path/to/encrypted_mail.eml | less
+
