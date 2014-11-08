@@ -1,0 +1,69 @@
+#!/usr/bin/escript
+%%! -pz /home/donpiekarz/dev/erlang/fatfish/ebin/ /home/donpiekarz/dev/erlang/fatfish/deps/gen_smtp/ebin/
+
+
+-include_lib("public_key/include/public_key.hrl").
+
+
+encrypt_email(Str)->
+    {ok, RawFile} = file:read_file("../../certs/koparka.czerwona"),
+    [Cert] =  public_key:pem_decode(RawFile),
+    {'Certificate', DerRaw, not_encrypted} = Cert,
+    CertRecord = public_key:der_decode('Certificate', DerRaw),
+    TBSCertificate = CertRecord#'Certificate'.tbsCertificate,
+    PublicKeyInfo = TBSCertificate#'TBSCertificate'.subjectPublicKeyInfo,
+    {0, PublicKeyDer} = PublicKeyInfo#'SubjectPublicKeyInfo'.subjectPublicKey,
+    PublicKey = public_key:der_decode('RSAPublicKey', PublicKeyDer),
+    Out = public_key:encrypt_public(Str, PublicKey),
+    io:fwrite("bbb: ~p~n", [Out]),
+    Out.
+
+
+main([]) ->
+    R = application:ensure_all_started(ssl),
+    io:fwrite("started ? ~p~n", [R]),
+
+    InputMail = "to jest zaszyfrowany mail\nciekawe czy da sie to odczytac",
+    BinaryMail = list_to_binary(InputMail),
+    EncryptedMail = encrypt_email(BinaryMail),
+    ArmoredBinMail = base64:encode(EncryptedMail),
+    ArmoredMail = binary_to_list(ArmoredBinMail),
+
+    %io:fwrite("liby: ~p~n", [code:get_path()]),
+    From = "<test@fatfish.pepiniera.net>",
+    To =  ["<koparka.czerwona@gmail.com>"],
+        Mail = [
+        {from, From},
+        {to, "<koparka.czerwona@gmail.com>"},
+        {subject, "testing"},
+        {body_mime, 
+            [
+                {separator, "000SomexxxRandomString000"},
+                {body, "Here's a picture of me\r\n"},
+                {attchment, [
+                    {content_transfer_encoding, "base64"},
+                    {content_type, "application/octet-stream"},
+                    {name, "testmail.eml"},
+                    {data, ArmoredMail}
+                    ]}
+            ]
+        }
+    ],
+    Options = [
+               {relay, "gmail.com"},
+               {tls, always}
+              ],
+
+    RawMail = mail:compose_mail(Mail),
+    Res = gen_smtp_client:send_blocking({From, To, RawMail}, Options),
+    io:fwrite("wyjscie: ~p~n", [Res]).
+
+
+
+
+
+
+
+
+
+
