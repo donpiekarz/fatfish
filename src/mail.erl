@@ -60,7 +60,7 @@ dispatch_mime_field(close, Separator,  Output)->
     Output ++ "\r\n--" ++ Separator ++ "--" ++ "\r\n";
 dispatch_mime_field({body, Value}, Separator, Output)->
     dispatch_mime_field(open, Separator, Output)
-        ++ "Content-Type: text/plain; charset=UTF-8\r\n"
+        ++ "Content-Type: text/plain; charset=UTF-8\r\n\r\n"
         ++ format_mail(Value) ++ "\r\n\r\n";
 dispatch_mime_field({attchment, Value}, Separator, Output)->
     Encoding = lists:keyfind(content_transfer_encoding,1 , Value),
