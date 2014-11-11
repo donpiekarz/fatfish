@@ -1,0 +1,8 @@
+User-Agent: FatFish/0.1.0
+MIME-Version: 1.0
+Subject: New Mail
+Content-Type: application/pkcs7-mime; name="smime.p7m"; smime-type=enveloped-data
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7m"
+Content-Description: S/MIME Encrypted Message
+

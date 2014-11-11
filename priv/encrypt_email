@@ -1,12 +1,12 @@
 #!/usr/bin/escript
-%%! -pz /home/donpiekarz/dev/erlang/fatfish/ebin/ /home/donpiekarz/dev/erlang/fatfish/deps/gen_smtp/ebin/
+%%! -mnesia debug verbose -pz /home/donpiekarz/dev/erlang/fatfish/ebin/ /home/donpiekarz/dev/erlang/fatfish/deps/gen_smtp/ebin/
 
 
 -include_lib("public_key/include/public_key.hrl").
 
 
-encrypt_email(Str)->
-    {ok, RawFile} = file:read_file("../../certs/koparka.czerwona"),
+encrypt_email(PathToCert, Str)->
+    {ok, RawFile} = file:read_file(PathToCert),
     [Cert] =  public_key:pem_decode(RawFile),
     {'Certificate', DerRaw, not_encrypted} = Cert,
     CertRecord = public_key:der_decode('Certificate', DerRaw),
@@ -14,56 +14,75 @@ encrypt_email(Str)->
     PublicKeyInfo = TBSCertificate#'TBSCertificate'.subjectPublicKeyInfo,
     {0, PublicKeyDer} = PublicKeyInfo#'SubjectPublicKeyInfo'.subjectPublicKey,
     PublicKey = public_key:der_decode('RSAPublicKey', PublicKeyDer),
-    Out = public_key:encrypt_public(Str, PublicKey),
+    io:fwrite("aaa: ~p~n", [PublicKey]),
+    io:fwrite("size of Str ~p~n", [byte_size(Str)]),
+    %Out = public_key:encrypt_public(Str, PublicKey),
+    PubKey = [element(3, PublicKey), element(2, PublicKey)],
+    Padding = rsa_pkcs1_oaep_padding,
+    Out = crypto:public_encrypt(rsa, Str, PubKey, Padding),
     io:fwrite("bbb: ~p~n", [Out]),
     Out.
+
+
+get_message()->
+    From = "<test@fatfish.pepiniera.net>",
+    To =  "<koparka.czerwona@gmail.com>",
+    Mail = [
+            {from, From},
+            {to, To},
+            {subject, "testing"},
+            {body_mime,
+             [
+              {separator, "000SomexxxRandomString000"},
+              {body, "Here's a picture of me\r\n"}
+             ]
+            }
+           ],
+
+    {From, [To], mail:compose_mail(Mail)}.
+
+build_mail({From, ListTo, Message}) ->
+    {ok, BinBegin} = file:read_file("priv/templates/fatfish_encrypted_begin.txt"),
+    {ok, BinEnd} = file:read_file("priv/templates/fatfish_encrypted_end.txt"),
+
+    Begin = binary_to_list(BinBegin),
+    End = binary_to_list(BinEnd),
+
+    {From, ListTo, Begin ++ Message ++ End}.
+
+build_encrypted_mail({_From, [ToRaw], Message}) ->
+    {ok, BinMid} = file:read_file("priv/templates/fatfish_mid.txt"),
+    Mid = binary_to_list(BinMid),
+    From = "From: FatFish MTA <test@fatfish.pepiniera.net>\r\n",
+    To = "To: " ++ ToRaw ++ "\r\n",
+    io:fwrite("to1~n"),
+    %BinMessage = list_to_binary(Message),
+    BinMessage = <<"ala ma kotaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">>,
+    PathToCert = "/home/donpiekarz/yavin/dev/certs/koparka.czerwona",
+    io:fwrite("bin message: ~p~n", [BinMessage]),
+    EncryptedMessage = encrypt_email(PathToCert, BinMessage),
+    io:fwrite("to2~n"),
+    ArmoredMessage = base64:encode(EncryptedMessage),
+    io:fwrite("to3~n"),
+
+    From ++ To ++ Mid ++ ArmoredMessage.
+
 
 
 main([]) ->
     R = application:ensure_all_started(ssl),
     io:fwrite("started ? ~p~n", [R]),
 
-    InputMail = "to jest zaszyfrowany mail\nciekawe czy da sie to odczytac",
-    BinaryMail = list_to_binary(InputMail),
-    EncryptedMail = encrypt_email(BinaryMail),
-    ArmoredBinMail = base64:encode(EncryptedMail),
-    ArmoredMail = binary_to_list(ArmoredBinMail),
-
     %io:fwrite("liby: ~p~n", [code:get_path()]),
-    From = "<test@fatfish.pepiniera.net>",
-    To =  ["<koparka.czerwona@gmail.com>"],
-        Mail = [
-        {from, From},
-        {to, "<koparka.czerwona@gmail.com>"},
-        {subject, "testing"},
-        {body_mime, 
-            [
-                {separator, "000SomexxxRandomString000"},
-                {body, "Here's a picture of me\r\n"},
-                {attchment, [
-                    {content_transfer_encoding, "base64"},
-                    {content_type, "application/octet-stream"},
-                    {name, "testmail.eml"},
-                    {data, ArmoredMail}
-                    ]}
-            ]
-        }
-    ],
+    Envelope = get_message(),
     Options = [
                {relay, "gmail.com"},
                {tls, always}
               ],
 
-    RawMail = mail:compose_mail(Mail),
-    Res = gen_smtp_client:send_blocking({From, To, RawMail}, Options),
+    %Res = gen_smtp_client:send_blocking(Envelope, Options),
+    M = build_mail(Envelope),
+    Out = build_encrypted_mail(M),
+    file:write_file("/tmp/fatfish_message.eml", Out),
+    Res = ok,
     io:fwrite("wyjscie: ~p~n", [Res]).
-
-
-
-
-
-
-
-
-
-

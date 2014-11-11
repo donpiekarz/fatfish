@@ -1,0 +1,23 @@
+Content-Type: multipart/mixed;
+ boundary="------------070107010107090202060802"
+
+This is a multi-part message in MIME format.
+--------------070107010107090202060802
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+Hello user,
+this is a message from FatFish service.
+The orginal message is an attachment.
+
+Regards,
+FatFish
+
+
+--------------070107010107090202060802
+Content-Type: message/rfc822;
+ name="OriginalMessage.eml"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="OriginalMessage.eml"
+
