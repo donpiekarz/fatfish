@@ -1,9 +1,18 @@
 #!/usr/bin/escript
-%%! -mnesia debug verbose -pz /home/donpiekarz/dev/erlang/fatfish/ebin/ /home/donpiekarz/dev/erlang/fatfish/deps/gen_smtp/ebin/
 
 
 -include_lib("public_key/include/public_key.hrl").
 
+
+
+smime_encrypt(PublicKey, Str) ->
+
+    %#person{phone=[0,8,2,3,4,3,1,2], name="Robert"}.
+
+    Smime = smime:get_smime(),
+    {ok, Body} = smime:encode_smime(Smime),
+    io:fwrite("aaaaaaaaa: ~p~n", [Body]),
+    Body.
 
 encrypt_email(PathToCert, Str)->
     {ok, RawFile} = file:read_file(PathToCert),
@@ -14,14 +23,7 @@ encrypt_email(PathToCert, Str)->
     PublicKeyInfo = TBSCertificate#'TBSCertificate'.subjectPublicKeyInfo,
     {0, PublicKeyDer} = PublicKeyInfo#'SubjectPublicKeyInfo'.subjectPublicKey,
     PublicKey = public_key:der_decode('RSAPublicKey', PublicKeyDer),
-    io:fwrite("aaa: ~p~n", [PublicKey]),
-    io:fwrite("size of Str ~p~n", [byte_size(Str)]),
-    %Out = public_key:encrypt_public(Str, PublicKey),
-    PubKey = [element(3, PublicKey), element(2, PublicKey)],
-    Padding = rsa_pkcs1_oaep_padding,
-    Out = crypto:public_encrypt(rsa, Str, PubKey, Padding),
-    io:fwrite("bbb: ~p~n", [Out]),
-    Out.
+    smime_encrypt(PublicKey, Str).
 
 
 get_message()->
@@ -57,7 +59,7 @@ build_encrypted_mail({_From, [ToRaw], Message}) ->
     To = "To: " ++ ToRaw ++ "\r\n",
     io:fwrite("to1~n"),
     %BinMessage = list_to_binary(Message),
-    BinMessage = <<"ala ma kotaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">>,
+    BinMessage = <<"ala ma kotaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1">>,
     PathToCert = "/home/donpiekarz/yavin/dev/certs/koparka.czerwona",
     io:fwrite("bin message: ~p~n", [BinMessage]),
     EncryptedMessage = encrypt_email(PathToCert, BinMessage),
@@ -70,19 +72,28 @@ build_encrypted_mail({_From, [ToRaw], Message}) ->
 
 
 main([]) ->
+    true = code:add_pathz(filename:dirname(escript:script_name()) 
+			  ++ "/../ebin"),
+    true = code:add_pathz(filename:dirname(escript:script_name()) 
+			  ++ "/../deps/gen_smtp/ebin"),
     R = application:ensure_all_started(ssl),
     io:fwrite("started ? ~p~n", [R]),
 
     %io:fwrite("liby: ~p~n", [code:get_path()]),
-    Envelope = get_message(),
-    Options = [
-               {relay, "gmail.com"},
-               {tls, always}
-              ],
+    %Envelope = get_message(),
+    %Options = [
+    %           {relay, "gmail.com"},
+    %           {tls, always}
+    %          ],
 
     %Res = gen_smtp_client:send_blocking(Envelope, Options),
-    M = build_mail(Envelope),
-    Out = build_encrypted_mail(M),
-    file:write_file("/tmp/fatfish_message.eml", Out),
+    %M = build_mail(Envelope),
+    %Out = build_encrypted_mail(M),
+    %file:write_file("/tmp/fatfish_message.eml", Out),
+
+    
+    Body = smime_encrypt("aaa", "bbb"),
+    file:write_file("/tmp/fatfish_encoded.bin", Body),
+
     Res = ok,
     io:fwrite("wyjscie: ~p~n", [Res]).
