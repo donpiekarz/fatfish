@@ -8,8 +8,8 @@
 -ifndef(_PKIX1EXPLICIT88_HRL_).
 -define(_PKIX1EXPLICIT88_HRL_, true).
 
--record('Attribute',{
-type, values}).
+%-record('Attribute',{
+%type, values}).
 
 -record('AttributeTypeAndValue',{
 type, value}).
@@ -38,8 +38,8 @@ version = asn1_NOVALUE, signature, issuer, thisUpdate, nextUpdate = asn1_NOVALUE
 -record('TBSCertList_revokedCertificates_SEQOF',{
 userCertificate, revocationDate, crlEntryExtensions = asn1_NOVALUE}).
 
--record('AlgorithmIdentifier',{
-algorithm, parameters = asn1_NOVALUE}).
+%-record('AlgorithmIdentifier',{
+%algorithm, parameters = asn1_NOVALUE}).
 
 -record('ORAddress',{
 'built-in-standard-attributes', 'built-in-domain-defined-attributes' = asn1_NOVALUE, 'extension-attributes' = asn1_NOVALUE}).
