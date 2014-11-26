@@ -8,10 +8,10 @@
 smime_encrypt(PublicKey, Str) ->
 
     %#person{phone=[0,8,2,3,4,3,1,2], name="Robert"}.
-
+    io:fwrite("aaaaaaaaa~n"),
     Smime = smime:get_smime(),
     {ok, Body} = smime:encode_smime(Smime),
-    io:fwrite("aaaaaaaaa: ~p~n", [Body]),
+    io:fwrite("bbbbbbbbb: ~p~n", [Body]),
     Body.
 
 encrypt_email(PathToCert, Str)->
