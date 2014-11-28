@@ -194,3 +194,35 @@ get_smime()->
 
 encode_smime(Smime)->
     'OTP-PUB-KEY':encode('ContentInfo', Smime).
+
+get_issuer(Cert) when is_record(Cert, 'Certificate') ->
+    TBSCertificate = Cert#'Certificate'.tbsCertificate,
+    Issuer = TBSCertificate#'TBSCertificate'.issuer,
+    Issuer.
+
+get_serial(Cert) when is_record(Cert, 'Certificate') ->
+    TBSCertificate = Cert#'Certificate'.tbsCertificate,
+    SerialNumber = TBSCertificate#'TBSCertificate'.serialNumber,
+    SerialNumber.
+
+create_issuer_and_serial_number(Cert) when is_record(Cert, 'Certificate') ->
+    #'IssuerAndSerialNumber'{
+        issuer=get_issuer(Cert),
+        serialNumber=get_serial(Cert)
+        }.
+
+get_key_encryption_algorithm() ->
+    #'KeyEncryptionAlgorithmIdentifier'{
+         algorithm = {1,2,840,113549,1,1,1},
+         parameters = <<5,0>>}.
+
+get_encrypted_key() ->
+    ok.
+
+%-record('RecipientInfo',{
+%version, issuerAndSerialNumber, keyEncryptionAlgorithm, encryptedKey}).
+
+create_recipient_info(Cert) when is_record(Cert, 'Certificate') ->
+    ok.
+
+
