@@ -1,6 +1,6 @@
 -module(smime).
 
--export([get_smime/0, encode_smime/1]).
+-export([get_smime/0, encode_smime/1, get_serial/1, create_recipient_info/1]).
 
 -include_lib("public_key/include/public_key.hrl").
 
