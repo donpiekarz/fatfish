@@ -1,5 +1,5 @@
 :name "fatfish"
 ;:node-sname ""
-:lib-dirs '("lib" "test")
-:app-include-dirs '("include")
+:lib-dirs '("deps")
+;:app-include-dirs '("include")
 ;:project-include-dirs '("test/shared/include")
