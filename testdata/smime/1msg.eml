@@ -1,0 +1,71 @@
+Delivered-To: koparka.czerwona@gmail.com
+Received: by 10.76.72.98 with SMTP id c2csp469621oav;
+        Sun, 7 Dec 2014 04:25:34 -0800 (PST)
+X-Received: by 10.180.228.101 with SMTP id sh5mr16840840wic.62.1417955133915;
+        Sun, 07 Dec 2014 04:25:33 -0800 (PST)
+Return-Path: <koparka.zolta@gmail.com>
+Received: from mail-wi0-x243.google.com (mail-wi0-x243.google.com. [2a00:1450:400c:c05::243])
+        by mx.google.com with ESMTPS id fs8si5212006wib.87.2014.12.07.04.25.33
+        for <koparka.czerwona@gmail.com>
+        (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+        Sun, 07 Dec 2014 04:25:33 -0800 (PST)
+Received-SPF: pass (google.com: domain of koparka.zolta@gmail.com designates 2a00:1450:400c:c05::243 as permitted sender) client-ip=2a00:1450:400c:c05::243;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of koparka.zolta@gmail.com designates 2a00:1450:400c:c05::243 as permitted sender) smtp.mail=koparka.zolta@gmail.com;
+       dkim=pass header.i=@gmail.com;
+       dmarc=pass (p=NONE dis=NONE) header.from=gmail.com
+Received: by mail-wi0-x243.google.com with SMTP id h11so1067229wiw.6
+        for <koparka.czerwona@gmail.com>; Sun, 07 Dec 2014 04:25:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding:content-disposition
+         :content-description;
+        bh=Y7ymkiqqdU9EBOYwFFzLb70OJerLsaxTY5Qyom8I63Y=;
+        b=y+r9TM7nbqNx4thB42oCiTkBKlcO4II8x267aiGWltzjT7H1kwzvvlFGx7+MgO1PB7
+         e9mhm1nVQJSgp7RGMTFQVFm6OiG2hoc142G2KH1C2e/wQoTlM9tWO/fgRQAt16iZ3GAj
+         /3hBaVq/vDb4MVVcTLttIe4hCcR+tpoStNHN3flWFae5ht/C11hV+urWkayDoEcsqcY7
+         xxroQmu0d6ZDo2nfw9LSdJRtZPhyPsjJEF8hA1ZCfal4H1jI8zx6ivNLxrehvSlnzmUM
+         GfYQWIyvBjFdAoyazuJnIUweDZd/gCBlBakr5dR4nWcmCoNMWdbrC9g6I8ZlXGNokq7N
+         mBMg==
+X-Received: by 10.194.175.202 with SMTP id cc10mr38744065wjc.27.1417955133227;
+        Sun, 07 Dec 2014 04:25:33 -0800 (PST)
+Return-Path: <koparka.zolta@gmail.com>
+Received: from [192.168.119.128] (agog178.neoplus.adsl.tpnet.pl. [217.99.238.178])
+        by mx.google.com with ESMTPSA id w4sm52400151wjw.39.2014.12.07.04.25.27
+        for <koparka.czerwona@gmail.com>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 07 Dec 2014 04:25:28 -0800 (PST)
+Message-ID: <54844736.4090303@gmail.com>
+Date: Sun, 07 Dec 2014 13:25:26 +0100
+From: Koparka Zolta <koparka.zolta@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Thunderbird/31.2.0
+MIME-Version: 1.0
+To: koparka.czerwona@gmail.com
+Subject: Test encrypt 1
+Content-Type: application/pkcs7-mime; name="smime.p7m"; smime-type=enveloped-data
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7m"
+Content-Description: S/MIME Encrypted Message
+
+MIAGCSqGSIb3DQEHA6CAMIACAQAxggOTMIIBxQIBADCBrDCBlzELMAkGA1UEBhMCR0IxGzAZ
+BgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMR
+Q09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRp
+Y2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEHVSjzCUD7yjPOBRkHMkJggwDQYJKoZIhvcN
+AQEBBQAEggEAVDxzGzEprWnJMuHgtRm5woC4IN2pJ/suEXvroNdyGMVQ+3eH9726lJfDHozP
+ksi3/0k5eBUEJA2GqYrQbIP2CqlYO2/O+F8txwh6PRE3bFJaE3kW8j38xlHc07zyFGJ0tTrZ
+x2ZO4wOCRZQMWiO/FaVVo8WxVHWnRyUMAtThaubbuC32iVc0RttTaHUueGdTbqFZS1Hmkon6
+W2BsUZSw9Uec2OC/skMBju+Pd8H7Tl9H1UEmkEnZlZEmaWN2a91Lk8VQneEx/2DF4m6WXw1+
+GfHlw6+nuyLBklSu1Ha9ZsZK/RI0USeR3ft46G9qO8PbLXlMjC2+ZfNTa3A7naW9wjCCAcYC
+AQAwga0wgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAO
+BgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRD
+T01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+tb3yWRRuIHGS8d5H3jUz8TANBgkqhkiG9w0BAQEFAASCAQAXvZ1Ob3pgoLRmWI8T4wH/qgVt
+nFvZBap3BFxW0v7SD8lpDZ0fPFmu7Selg4MzFq+FjF3ZyD0SnPTIRouDzy8xj7NykVWwoY8q
+O0gdUQ76BeEwOT1BXX7f0FSvBSY/ORyl1xM6KYwDQI4l3SX+U9KMzpt9A1gsoUwegAmzmsz6
+5KYeaavv40weC/W1gRvX8W8OyhQ9PWq1UJKzbcwIsRdqnTCrQFnkw/ITDK4w+WWhRmIASrIx
+uMA10OYfio/CVK8QSwmRdYDl1BHb5+92dVHIl46K8iUaezYriwyYVU++eCUQ9Af+352MKVUD
+3D+fVl0yi8huhsPrMrDssAwoHBBXMIAGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQItSYZSSaS
+8LOggAR4NjHOOLReQzaXkiZ2R5LGaF345zX0cQhkHpP0/vDb4IRheYGvbFuPHBnqGibtuZ5H
+AbFlXla3lnPPR8jfHj2ag7jDHFUwwQ+Ne4/8yK0qHT1MwKJrqZ+blUfilzj72ceUpzIEMDv9
+DdU4XzYZskHmZUBAkriqmAg1BAiegHlWgYlFQgAAAAAAAAAAAAA=

@@ -1,0 +1,71 @@
+Delivered-To: koparka.czerwona@gmail.com
+Received: by 10.76.72.98 with SMTP id c2csp469660oav;
+        Sun, 7 Dec 2014 04:26:06 -0800 (PST)
+X-Received: by 10.180.211.84 with SMTP id na20mr17311351wic.41.1417955166017;
+        Sun, 07 Dec 2014 04:26:06 -0800 (PST)
+Return-Path: <koparka.zolta@gmail.com>
+Received: from mail-wi0-x242.google.com (mail-wi0-x242.google.com. [2a00:1450:400c:c05::242])
+        by mx.google.com with ESMTPS id cu3si55533348wjb.20.2014.12.07.04.26.05
+        for <koparka.czerwona@gmail.com>
+        (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+        Sun, 07 Dec 2014 04:26:06 -0800 (PST)
+Received-SPF: pass (google.com: domain of koparka.zolta@gmail.com designates 2a00:1450:400c:c05::242 as permitted sender) client-ip=2a00:1450:400c:c05::242;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of koparka.zolta@gmail.com designates 2a00:1450:400c:c05::242 as permitted sender) smtp.mail=koparka.zolta@gmail.com;
+       dkim=pass header.i=@gmail.com;
+       dmarc=pass (p=NONE dis=NONE) header.from=gmail.com
+Received: by mail-wi0-x242.google.com with SMTP id l15so825281wiw.1
+        for <koparka.czerwona@gmail.com>; Sun, 07 Dec 2014 04:26:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding:content-disposition
+         :content-description;
+        bh=MY65DDXWG/n7vT3BHydvR7e6YSX9c+z0g9YJWwyvvL4=;
+        b=MeMxbnH4YH4lcXfJkvgX/j99/7QQvKvIE/BmqKys7OiM7JIcm9jMiN8zKB9AFszrtP
+         ja7Y1+q0RKhuhoY+xKP0Bek4S8KEOU6ozCgeb+9AcNY8D+qDdRHVyQ8zHtY1vBpy06va
+         JfCH2RhOUSH1b5yYJZYNUdeLKgwXnf4LPCCJVYVnrB54wwXsFQOC99JMdqA7TJiX9Hyn
+         6LRQjz8uzUvLfbUJfR09lQJy3vu2hYANb76MLutgzaHxun5rfeoZqupWWDc6oj6RIuzj
+         rrwafts5r41XClQODTJxT2bRVsjNMrOtg1x9Teo0m4uprLs36/2I2EszYDm4+gQekelT
+         GWRw==
+X-Received: by 10.180.73.101 with SMTP id k5mr16869134wiv.43.1417955165559;
+        Sun, 07 Dec 2014 04:26:05 -0800 (PST)
+Return-Path: <koparka.zolta@gmail.com>
+Received: from [192.168.119.128] (agog178.neoplus.adsl.tpnet.pl. [217.99.238.178])
+        by mx.google.com with ESMTPSA id p15sm35017284wjr.18.2014.12.07.04.26.03
+        for <koparka.czerwona@gmail.com>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 07 Dec 2014 04:26:04 -0800 (PST)
+Message-ID: <5484475B.4060208@gmail.com>
+Date: Sun, 07 Dec 2014 13:26:03 +0100
+From: Koparka Zolta <koparka.zolta@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:31.0) Gecko/20100101 Thunderbird/31.2.0
+MIME-Version: 1.0
+To: koparka.czerwona@gmail.com
+Subject: Test encrypt 2
+Content-Type: application/pkcs7-mime; name="smime.p7m"; smime-type=enveloped-data
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7m"
+Content-Description: S/MIME Encrypted Message
+
+MIAGCSqGSIb3DQEHA6CAMIACAQAxggOTMIIBxQIBADCBrDCBlzELMAkGA1UEBhMCR0IxGzAZ
+BgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMR
+Q09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRp
+Y2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEHVSjzCUD7yjPOBRkHMkJggwDQYJKoZIhvcN
+AQEBBQAEggEAKOyUOGRs+G2bPbROR4l9NfoWhf9pUsw3SSHc1VBXwX5sQBE2vzxuUlgaRSgH
+6g6EDybylNFod0ZRNwDbXZsVqdHq+64Oeuctmv91QuJbIM3hcu2Bwb5HWBfVVnR7C/wq/EC2
+MRVF9Q6jxIKms7g+S8i+I+hVd7y//2bU0DEbiL9suaC9/gXtuzsPCobjB0kVhATEZME3im1I
+rvU6RMX5AoViBm1dYQEXCZtKe2mFlQPLcPdLipIlJLz077Lu/IXIlWIAFKmuBl7/fB7l8nsx
+gFoug3Ud0vL7Uzdj5/hguLx0SAYTFpYah6hO5aKNJWKmLZw5KCTkzFefEIy5GEUKNjCCAcYC
+AQAwga0wgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAO
+BgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRD
+T01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+tb3yWRRuIHGS8d5H3jUz8TANBgkqhkiG9w0BAQEFAASCAQAjVooDJcNl+9dHtK/TZ/H2Fmu2
+MoprZDw7S1Py5RJh6nS3+HPy3drJ/lZbvboILD4Pqn/YFuw8MOgiov65kPsTttNUD5upF53l
+azV4TcWTANcjmN55JPTj8ONwr3nIDbovT5GlCDGhuiUFBzRF4ck6tm0SCVQtf6q9FbFiTy7n
++tumGaR9LtTxfv8HtrZ2t88J3FTRws88As8lG9NbEc2Y737cMQ+9P/u7czJTD0/UbFJPN72i
+5bpUy5Q7Iy/ctiLkikxb9tPJ1NTAsqijRjQpMqPTNxYirm2sVZ7rb7Oh/qP/h/NoZrBE4qIy
+mNivr+GwneZQbEQ6ZPF9gnpKXFqDMIAGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIrIklbB4B
+deuggAR4JhevFGHPnHHRvdmVbEiiUKoKaXgxhKvWiMRk3AoASZugfUGCz+lpS7V3SvgK3qo3
+J4Ov2ia+58ZfyblbT098iAMUgDDL2X+hbgHnoElJaDpSHEjYej+uQT4gJ1ZarAn43FAscplF
+cnlg8Rq34uqPepnC4y8gqGReBAiK/X3jaeylPgAAAAAAAAAAAAA=
