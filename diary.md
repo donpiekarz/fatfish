@@ -2,6 +2,19 @@ This file will be in polish.
 
 Chciałbym tutaj opisywać swoją przygodę przy przygotowywaniu fatfisha.
 
+2014-12-09
+===========================
+Biblioteka crypto w erlangu nie potrafi dodawać paddingu do wiadomości szyfrowanych blokowo. I nie powie tego w prost, musiałem to wyczytać kodów w C samego erlanga.
+
+W Każdym razie, taki kod:
+
+crypto:block_encrypt(des_cbc, <<"12345678">>, <<"12345678">>, <<"czysty tekst\n16\n">>).
+
+dekoduje się tak opensslem:
+
+openssl enc -d -in fatfish_des.bin -des-cbc -K 3132333435363738 -iv 3132333435363738 -nopad
+
+
 2014-12-08
 ===========================
 Ostatni tydzień spędziłem na rozgryzaniu co wpisać w pole issuer i serial w RecipientInfo. Przy okazji tego zwiedziłem implementacje openssla. 
