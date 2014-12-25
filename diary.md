@@ -7,20 +7,21 @@ Chciałbym tutaj opisywać swoją przygodę przy przygotowywaniu fatfisha.
 Przez ostatnie dwa tygodnie walczyłem z deszyfrowaniem wiadomości smime zapisanej przez Thunderbirda. Czytałem implementacje OpenSSLa, NSSa (biblioteka z której korzysta Mozilla) oraz różne książki do kryptografii (polecam: Cryptography and Network Security - Principles and Practice, 6th edition). W końcu zdecydowałem się pobrać, skompilować i zdebugować samego OpenSSLa. Następnie krok po kroku analizowałem co z czego jest dekodowane. 
 
 
+generujemy tekst jawny, lepiej żeby długość tego tekstu była wielokrotnością 8
 ```
-# generujemy tekst jawny, lepiej żeby długość tego tekstu była wielokrotnością 8
 echo "to jest test 42" > 3msg.dec.txt
 ```
 
+szyfrujemy tekst jawny des3 i zapisujemy w formacie DER (żeby było szybciej), używamy do tego certyfikatu odbiorcy
 ```
-# szyfrujemy tekst jawny des3 i zapisujemy w formacie DER (żeby było szybciej), używamy do tego certyfikatu odbiorcy
 openssl smime -encrypt -des3 -in 3msg.dec.txt -out 3msg.enc.der -outform der ../certs/koparka.czerwona/cert.pem
 ```
 
+sprawdzamy czy coś z tego wyszło, narzędzie dumpasn1 (paczka w debianie nazywa sie asn1dump)
 ```
-# sprawdzamy czy coś z tego wyszło, narzędzie dumpasn1 (paczka w debianie nazywa sie asn1dump)
 dumpasn1 3msg.enc.der
 ```
+
 sprawdzamy czy coś z tego wyszło, narzędzie openssl asn1parse
 ```
 openssl asn1parse -in 3msg.enc.der -inform der
