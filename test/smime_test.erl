@@ -140,6 +140,21 @@ rip_iv_test() ->
     ExpectedIvec = get_iv_test(),
     ?assertEqual(ExpectedIvec, ActualIvec).
 
+rip_data_test() ->
+    ContentInfo = get_smime_message_test(),
+    Content = ContentInfo#'ContentInfo'.content,
+    EncryptedContentInfo = Content#'EnvelopedData'.encryptedContentInfo,
+    EncryptedContent = EncryptedContentInfo#'EncryptedContentInfo'.encryptedContent,
+    ActualEncryptedContent = list_to_binary(EncryptedContent),
+    ExpectedEncryptedContent = get_encrypted_data_test(),
+    ?assertEqual(ExpectedEncryptedContent, ActualEncryptedContent).
+
+
+
+
+
+
+
 
 
 
