@@ -95,5 +95,40 @@ decrypt_session_key_test() ->
     Key = public_key:decrypt_private(EncryptedKey, Priv, [{rsa_pad,'rsa_pkcs1_padding' }]),
     ?assertEqual(DecryptedKey, Key).
 
+get_encrypted_data_test() ->
+    {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.data"),
+    Bytes.
+
+get_decrypted_data_test() ->
+    {ok, Bytes} = file:read_file("../testdata/smime/1msg.dec.data"),
+    Bytes.
+
+get_iv_test() ->
+    {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.iv"),
+    Bytes.
+
+decrypt_data_test() ->
+    DecryptedData = get_decrypted_data_test(),
+    EncryptedData = get_encrypted_data_test(),
+    Key1 = binary_to_list(get_decrypted_session_key_test()),
+    Key = [ list_to_binary(lists:sublist(Key1, X, 8)) || X <- lists:seq(1,length(Key1),8) ],
+    Ivec = get_iv_test(),
+    Plain = crypto:block_decrypt(des3_cbc, Key, Ivec, EncryptedData),
+
+    % hack for no handling for padding in block ciphers in Erlang/OTP
+    PlainList = binary_to_list(Plain),
+    DecryptedDataList = binary_to_list(DecryptedData),
+    PlainNoPad = string:sub_string(PlainList, 1, 127),
+
+    ?assertEqual(DecryptedDataList, PlainNoPad).
+
+
+
+
+
+
+
+
+
 
 
