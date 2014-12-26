@@ -80,17 +80,26 @@ create_recipient_info_test() ->
     Expected = get_recipient_info(),
     ?assertEqual(Expected, Actual).
 
-get_encrypted_session_key_test() ->
+get_encrypted_session_key1_test() ->
+    {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.key1"),
+    Bytes.
+    
+get_decrypted_session_key1_test() ->
+    {ok, Bytes} = file:read_file("../testdata/smime/1msg.dec.key1"),
+    Bytes.
+
+
+get_encrypted_session_key2_test() ->
     {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.key2"),
     Bytes.
     
-get_decrypted_session_key_test() ->
+get_decrypted_session_key2_test() ->
     {ok, Bytes} = file:read_file("../testdata/smime/1msg.dec.key2"),
     Bytes.
 
 decrypt_session_key_test() ->
-    DecryptedKey = get_decrypted_session_key_test(),
-    EncryptedKey = get_encrypted_session_key_test(),
+    DecryptedKey = get_decrypted_session_key2_test(),
+    EncryptedKey = get_encrypted_session_key2_test(),
     Priv = get_private_key_test(),
     Key = public_key:decrypt_private(EncryptedKey, Priv, [{rsa_pad,'rsa_pkcs1_padding' }]),
     ?assertEqual(DecryptedKey, Key).
@@ -110,7 +119,7 @@ get_iv_test() ->
 decrypt_data_test() ->
     DecryptedData = get_decrypted_data_test(),
     EncryptedData = get_encrypted_data_test(),
-    Key1 = binary_to_list(get_decrypted_session_key_test()),
+    Key1 = binary_to_list(get_decrypted_session_key2_test()),
     Key = [ list_to_binary(lists:sublist(Key1, X, 8)) || X <- lists:seq(1,length(Key1),8) ],
     Ivec = get_iv_test(),
     Plain = crypto:block_decrypt(des3_cbc, Key, Ivec, EncryptedData),
@@ -149,6 +158,21 @@ rip_data_test() ->
     ExpectedEncryptedContent = get_encrypted_data_test(),
     ?assertEqual(ExpectedEncryptedContent, ActualEncryptedContent).
 
+
+rip_session_key_test() ->
+    ContentInfo = get_smime_message_test(),
+    EnvelopedData = ContentInfo#'ContentInfo'.content,
+    RecipientInfos = EnvelopedData#'EnvelopedData'.recipientInfos,
+    [RecipientInfo1, RecipientInfo2] = element(2, RecipientInfos), 
+    
+    ActualEncryptedKey1 = list_to_binary(RecipientInfo1#'RecipientInfo'.encryptedKey),
+    ActualEncryptedKey2 = list_to_binary(RecipientInfo2#'RecipientInfo'.encryptedKey),
+
+    ExpectedEncryptedKey1 = get_encrypted_session_key1_test(),
+    ExpectedEncryptedKey2 = get_encrypted_session_key2_test(),
+
+    ?assertEqual(ExpectedEncryptedKey1, ActualEncryptedKey1),
+    ?assertEqual(ExpectedEncryptedKey2, ActualEncryptedKey2).
 
 
 
