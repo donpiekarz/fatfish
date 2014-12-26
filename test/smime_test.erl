@@ -123,6 +123,24 @@ decrypt_data_test() ->
     ?assertEqual(DecryptedDataList, PlainNoPad).
 
 
+get_smime_message_test() ->
+    {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.p7m"),
+    {ok, ContentInfo} = 'OTP-PUB-KEY':decode('ContentInfo', Bytes),
+    ContentInfo.
+
+rip_iv_test() ->
+    ContentInfo = get_smime_message_test(),
+    Content = ContentInfo#'ContentInfo'.content,
+    EncryptedContentInfo = Content#'EnvelopedData'.encryptedContentInfo,
+    ContentEncryptionAlgorithmIdentifier = EncryptedContentInfo#'EncryptedContentInfo'.contentEncryptionAlgorithm,
+    Parameters = ContentEncryptionAlgorithmIdentifier#'ContentEncryptionAlgorithmIdentifier'.parameters,
+    
+    % hack - asn1 unable to decode primitives
+    ActualIvec = list_to_binary(string:sub_string(binary_to_list(Parameters), 3)),
+    ExpectedIvec = get_iv_test(),
+    ?assertEqual(ExpectedIvec, ActualIvec).
+
+
 
 
 
