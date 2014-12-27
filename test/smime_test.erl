@@ -87,11 +87,19 @@ get_smime_message_test() ->
     {ok, ContentInfo} = 'OTP-PUB-KEY':decode('ContentInfo', Bytes),
     ContentInfo.
 
-rip_iv_test() ->
+rip_encrypted_content_info_test() ->
     ContentInfo = get_smime_message_test(),
     Content = ContentInfo#'ContentInfo'.content,
     EncryptedContentInfo = Content#'EnvelopedData'.encryptedContentInfo,
+    EncryptedContentInfo.
+
+rip_content_encryption_algorithm_test() ->
+    EncryptedContentInfo = rip_encrypted_content_info_test(),
     ContentEncryptionAlgorithmIdentifier = EncryptedContentInfo#'EncryptedContentInfo'.contentEncryptionAlgorithm,
+    ContentEncryptionAlgorithmIdentifier.
+
+rip_iv_test() ->
+    ContentEncryptionAlgorithmIdentifier = rip_content_encryption_algorithm_test(),
     Parameters = ContentEncryptionAlgorithmIdentifier#'ContentEncryptionAlgorithmIdentifier'.parameters,
     
     % hack - asn1 unable to decode primitives
@@ -129,8 +137,44 @@ rip_session_key_test() ->
     ?assertEqual(ExpectedEncryptedKey2, ActualEncryptedKey2).
 
 
+create_content_encryption_algorithm_test() ->
+    Ivec = get_iv_test(),
+    ExpectedContentEncryptionAlgorithm = rip_content_encryption_algorithm_test(),
+    ActualContentEncryptionAlgorithm = smime:create_content_encryption_algorithm(des3_cbc, Ivec),
+    ?assertEqual(ExpectedContentEncryptionAlgorithm, ActualContentEncryptionAlgorithm).
 
+create_encrypted_content_test() ->
+    Data = get_decrypted_data_test(),
+    Algo = des3_cbc,
+    Key1 = binary_to_list(get_decrypted_session_key2_test()),
+    Key = [ list_to_binary(lists:sublist(Key1, X, 8)) || X <- lists:seq(1,length(Key1),8) ],
+    Ivec = get_iv_test(),
 
+    ExpectedEncryptedContent = binary_to_list(get_encrypted_data_test()),
+    ActualEncryptedContent = smime:create_encrypted_content(Data, Algo, Key, Ivec),
+    ?assertEqual(ExpectedEncryptedContent, ActualEncryptedContent),
+    ok.
+
+create_encrypted_content_info_test() ->
+    Data = get_decrypted_data_test(),
+    Algo = des3_cbc,
+    Key1 = binary_to_list(get_decrypted_session_key2_test()),
+    Key = [ list_to_binary(lists:sublist(Key1, X, 8)) || X <- lists:seq(1,length(Key1),8) ],
+    Ivec = get_iv_test(),
+
+    ExpectedEncryptedContentInfo = rip_encrypted_content_info_test(),
+    ActualEncryptedContentInfo = smime:create_encrypted_content_info(Data, Algo, Key, Ivec),
+    ?assertEqual(ExpectedEncryptedContentInfo, ActualEncryptedContentInfo),
+    ok.
+
+add_padding_test() ->
+    ?assertEqual(<<1,2,3,5,5,5,5,5>>, smime:add_padding(8, << 1, 2, 3 >>)),
+    ?assertEqual(<<1,2,3,4,5,6,7,1>>, smime:add_padding(8, << 1, 2, 3, 4, 5, 6, 7 >>)),
+    ?assertEqual(<<1,7,7,7,7,7,7,7>>, smime:add_padding(8, << 1 >>)),
+    ?assertEqual(<<>>, smime:add_padding(8, <<  >>)),
+    ?assertEqual(<<1,2,3,4,5,6,7,8,9,7,7,7,7,7,7,7>>, smime:add_padding(8, << 1, 2, 3, 4, 5, 6, 7, 8, 9 >>)),
+    ?assertEqual(<<1,2,3,4,5,6,7,8>>, smime:add_padding(8, << 1, 2, 3, 4, 5, 6, 7, 8 >>)),
+    ok.
 
 
 

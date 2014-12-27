@@ -1,6 +1,7 @@
 -module(smime).
 
--export([encode_smime/1, get_serial/1, create_recipient_info/2]).
+-export([encode_smime/1, get_serial/1, create_recipient_info/2, create_content_encryption_algorithm/2, create_encrypted_content/4,
+	create_encrypted_content_info/4, add_padding/2]).
 
 -include_lib("public_key/include/public_key.hrl").
 
@@ -39,8 +40,44 @@ create_recipient_info(Cert, EncryptedKey) when is_record(Cert, 'Certificate') ->
        encryptedKey = EncryptedKey
       }.
 
+create_content_encryption_algorithm(des3_cbc, Ivec) ->
+    #'ContentEncryptionAlgorithmIdentifier'{
+       algorithm = {1,2,840,113549,3,7},
+       parameters = erlang:iolist_to_binary([<<4, 8>>, Ivec])
+      }.
+
+add_padding_impl(Data, _Pad, 0) ->
+    Data;
+add_padding_impl(Data, Pad, Missing) ->
+    add_padding_impl(erlang:iolist_to_binary([Data, Pad]), Pad, Missing - 1).
+
+add_padding(BlockSize, Data) ->
+    CurrentSize = byte_size(Data),
+    Missing = BlockSize - CurrentSize rem BlockSize,
+    if 
+	Missing =:= BlockSize ->
+	    Data;
+	true ->
+	    add_padding_impl(Data, <<Missing>>, Missing)
+    end.
+
+create_encrypted_content(Data, des3_cbc, Key, Ivec) ->
+    DataWithPadding = add_padding(8, Data),
+    binary_to_list(crypto:block_encrypt(des3_cbc, Key, Ivec, DataWithPadding)).
+
+create_encrypted_content_info(Data, Algo, Key, Ivec) ->
+    #'EncryptedContentInfo'{
+       contentType = {1,2,840,113549,1,7,1},
+       contentEncryptionAlgorithm = create_content_encryption_algorithm(Algo, Ivec),
+       encryptedContent = create_encrypted_content(Data, Algo, Key, Ivec)
+      }.
+
 create_smime(Cert, Data) ->
     ok.
+
+
+
+
 
 
 
