@@ -44,8 +44,7 @@ transform_public_key(PublicKey) when is_record(PublicKey, 'RSAPublicKey') ->
 
 create_encrypted_key(Cert, Key) ->
     PublicKey = get_public_key(Cert),
-    %public_key:encrypt_public(Key, PublicKey).
-    crypto:public_encrypt(rsa, Key, transform_public_key(PublicKey), rsa_pkcs1_padding).
+    public_key:encrypt_public(Key, PublicKey).
 
 create_recipient_info(Cert, EncryptedKey) when is_record(Cert, 'Certificate') ->
     #'RecipientInfo'{
