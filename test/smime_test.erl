@@ -32,7 +32,7 @@ get_public_key_test() ->
 create_encrypted_key_test() ->
     Cert = get_cert_test(),
     Key = get_decrypted_session_key2_test(),
-    ActualEncryptedKey = smime:create_encrypted_key(Cert, Key),
+    ActualEncryptedKey = smime:create_encrypted_key(Cert, des3_cbc, Key),
     ?assertEqual(256, byte_size(ActualEncryptedKey)).
 
 create_recipient_info_test() ->
@@ -186,6 +186,20 @@ add_padding_test() ->
     ?assertEqual(<<1,2,3,4,5,6,7,8,9,7,7,7,7,7,7,7>>, smime:add_padding(8, << 1, 2, 3, 4, 5, 6, 7, 8, 9 >>)),
     ?assertEqual(<<1,2,3,4,5,6,7,8>>, smime:add_padding(8, << 1, 2, 3, 4, 5, 6, 7, 8 >>)),
     ok.
+
+create_enveloped_data_test() ->
+    Cert = get_cert_test(),
+    Data = <<"hejo heja, lecimy sobie tutaj z testow">>,
+    ActualEnvelopedData = smime:create_enveloped_data(Data, Cert),
+    ?assert(is_record(ActualEnvelopedData, 'EnvelopedData')).
+
+
+
+
+
+
+
+
 
 
 
