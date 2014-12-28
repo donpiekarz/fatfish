@@ -1,7 +1,7 @@
 -module(smime).
 
 -export([encode_smime/1, get_serial/1, create_recipient_info/2, create_content_encryption_algorithm/2, create_encrypted_content/4,
-	create_encrypted_content_info/4, add_padding/2]).
+	 create_encrypted_content_info/4, add_padding/2]).
 
 -include_lib("public_key/include/public_key.hrl").
 
@@ -72,8 +72,22 @@ create_encrypted_content_info(Data, Algo, Key, Ivec) ->
        encryptedContent = create_encrypted_content(Data, Algo, Key, Ivec)
       }.
 
-create_smime(Cert, Data) ->
-    ok.
+create_enveloped_data(Data, RecipientCert) ->
+    Algo = des3_cbc,
+    Key = aa,
+    Ivec = bb,
+    EncryptedKey = cc,
+    #'EnvelopedData' {
+       version = edVer0,
+       recipientInfos = {riSet, [create_recipient_info(RecipientCert, EncryptedKey)]},
+       encryptedContentInfo = create_encrypted_content_info(Data, Algo, Key, Ivec)
+      }.
+
+
+
+
+
+
 
 
 
