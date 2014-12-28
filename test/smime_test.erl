@@ -29,6 +29,12 @@ get_public_key_test() ->
     ActualPK = smime:get_public_key(Cert),
     ?assert(is_record(ActualPK, 'RSAPublicKey')).
 
+create_encrypted_key_test() ->
+    Cert = get_cert_test(),
+    Key = get_decrypted_session_key2_test(),
+    ActualEncryptedKey = smime:create_encrypted_key(Cert, Key),
+    ?assertEqual(256, byte_size(ActualEncryptedKey)).
+
 create_recipient_info_test() ->
     Cert = get_cert_test(),
     Actual = smime:create_recipient_info(Cert,binary_to_list(get_encrypted_session_key2_test())),

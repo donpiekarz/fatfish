@@ -1,7 +1,6 @@
 -module(smime).
 
--export([encode_smime/1, get_serial/1, get_public_key/1, create_recipient_info/2, create_content_encryption_algorithm/2, 
-	 create_encrypted_content/4, create_encrypted_content_info/4, add_padding/2]).
+-export([encode_smime/1, get_serial/1, get_public_key/1, create_encrypted_key/2, create_recipient_info/2, create_content_encryption_algorithm/2, 	 create_encrypted_content/4, create_encrypted_content_info/4, add_padding/2]).
 
 -include_lib("public_key/include/public_key.hrl").
 
@@ -38,8 +37,15 @@ get_public_key(Cert) when is_record(Cert, 'Certificate') ->
     PublicKey = public_key:der_decode('RSAPublicKey', PublicKeyDer),
     PublicKey.
 
+transform_public_key(PublicKey) when is_record(PublicKey, 'RSAPublicKey') ->
+    E = element(3, PublicKey),
+    N = element(2, PublicKey),
+    [E, N].
+
 create_encrypted_key(Cert, Key) ->
-    ok.
+    PublicKey = get_public_key(Cert),
+    %public_key:encrypt_public(Key, PublicKey).
+    crypto:public_encrypt(rsa, Key, transform_public_key(PublicKey), rsa_pkcs1_padding).
 
 create_recipient_info(Cert, EncryptedKey) when is_record(Cert, 'Certificate') ->
     #'RecipientInfo'{
