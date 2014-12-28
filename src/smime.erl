@@ -1,12 +1,9 @@
 -module(smime).
 
--export([encode_smime/1, get_serial/1, get_public_key/1, create_encrypted_key/3, create_recipient_info/2, create_content_encryption_algorithm/2, 	 create_encrypted_content/4, create_encrypted_content_info/4, add_padding/2, create_enveloped_data/2]).
+-export([encode/1, get_serial/1, get_public_key/1, create_encrypted_key/3, create_recipient_info/2, create_content_encryption_algorithm/2, 	 create_encrypted_content/4, create_encrypted_content_info/4, add_padding/2, create_enveloped_data/2]).
 
 -include_lib("public_key/include/public_key.hrl").
 
-
-encode_smime(Smime)->
-    'OTP-PUB-KEY':encode('ContentInfo', Smime).
 
 get_issuer(Cert) when is_record(Cert, 'Certificate') ->
     TBSCertificate = Cert#'Certificate'.tbsCertificate,
@@ -95,17 +92,17 @@ create_enveloped_data(Data, RecipientCert) ->
       }.
 
 
+encode(EnvelopedData) when is_record(EnvelopedData, 'EnvelopedData') ->
+    ContentInfo = #'ContentInfo'{ 	
+		     contentType = {1,2,840,113549,1,7,3}, 	
+		     content = EnvelopedData
+		    },
+    'OTP-PUB-KEY':encode('ContentInfo', ContentInfo).
 
 
-
-
-
-
-
-
-
-
-
+decorate(ContentInfo) when is_record(ContentInfo, 'ContentInfo') ->
+    
+    ok.
 
 
 

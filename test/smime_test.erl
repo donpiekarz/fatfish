@@ -191,8 +191,13 @@ create_enveloped_data_test() ->
     Cert = get_cert_test(),
     Data = <<"hejo heja, lecimy sobie tutaj z testow">>,
     ActualEnvelopedData = smime:create_enveloped_data(Data, Cert),
-    ?assert(is_record(ActualEnvelopedData, 'EnvelopedData')).
+    ?assert(is_record(ActualEnvelopedData, 'EnvelopedData')),
+    ActualEnvelopedData.
 
+encode_test() ->
+    EnvelopedData = create_enveloped_data_test(),
+    {ok, Bytes} = smime:encode(EnvelopedData),
+    ?assert(is_binary(Bytes)).
 
 
 
