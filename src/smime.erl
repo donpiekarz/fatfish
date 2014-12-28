@@ -1,6 +1,6 @@
 -module(smime).
 
--export([encode/1, get_serial/1, get_public_key/1, create_encrypted_key/3, create_recipient_info/2, create_content_encryption_algorithm/2, 	 create_encrypted_content/4, create_encrypted_content_info/4, add_padding/2, create_enveloped_data/2]).
+-export([encode/1, decorate/1, get_serial/1, get_public_key/1, create_encrypted_key/3, create_recipient_info/2, create_content_encryption_algorithm/2, 	 create_encrypted_content/4, create_encrypted_content_info/4, add_padding/2, create_enveloped_data/2]).
 
 -include_lib("public_key/include/public_key.hrl").
 
@@ -100,10 +100,11 @@ encode(EnvelopedData) when is_record(EnvelopedData, 'EnvelopedData') ->
     'OTP-PUB-KEY':encode('ContentInfo', ContentInfo).
 
 
-decorate(ContentInfo) when is_record(ContentInfo, 'ContentInfo') ->
-    
-    ok.
-
+decorate(EnvelopedData) when is_record(EnvelopedData, 'EnvelopedData') ->
+    {ok, Bytes} = encode(EnvelopedData),
+    Base64Bytes = base64:encode(Bytes),
+    {ok, Msg} = file:read_file("../priv/templates/fatfish_mid.txt"),
+    iolist_to_binary([Msg, Base64Bytes, <<"\r\n">>]).
 
 
 

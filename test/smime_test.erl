@@ -199,6 +199,10 @@ encode_test() ->
     {ok, Bytes} = smime:encode(EnvelopedData),
     ?assert(is_binary(Bytes)).
 
+decorate_test() ->
+    EnvelopedData = create_enveloped_data_test(),
+    Str = smime:decorate(EnvelopedData),
+    ?assert(is_binary(Str)).
 
 
 
