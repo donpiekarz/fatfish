@@ -24,6 +24,11 @@ get_serial_test() ->
     Expected = 16#B5BDF259146E207192F1DE47DE3533F1,
     ?assertEqual(Expected, Actual).
 
+get_public_key_test() ->
+    Cert = get_cert_test(),
+    ActualPK = smime:get_public_key(Cert),
+    ?assert(is_record(ActualPK, 'RSAPublicKey')).
+
 create_recipient_info_test() ->
     Cert = get_cert_test(),
     Actual = smime:create_recipient_info(Cert,binary_to_list(get_encrypted_session_key2_test())),

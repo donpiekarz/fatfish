@@ -1,7 +1,7 @@
 -module(smime).
 
--export([encode_smime/1, get_serial/1, create_recipient_info/2, create_content_encryption_algorithm/2, create_encrypted_content/4,
-	 create_encrypted_content_info/4, add_padding/2]).
+-export([encode_smime/1, get_serial/1, get_public_key/1, create_recipient_info/2, create_content_encryption_algorithm/2, 
+	 create_encrypted_content/4, create_encrypted_content_info/4, add_padding/2]).
 
 -include_lib("public_key/include/public_key.hrl").
 
@@ -25,18 +25,27 @@ create_issuer_and_serial_number(Cert) when is_record(Cert, 'Certificate') ->
        serialNumber=get_serial(Cert)
       }.
 
-get_key_encryption_algorithm() ->
+create_key_encryption_algorithm() ->
     #'KeyEncryptionAlgorithmIdentifier'{
        algorithm = {1,2,840,113549,1,1,1},
        parameters = <<5,0>>
       }.
 
+get_public_key(Cert) when is_record(Cert, 'Certificate') ->
+    TBSCertificate = Cert#'Certificate'.tbsCertificate,
+    PublicKeyInfo = TBSCertificate#'TBSCertificate'.subjectPublicKeyInfo,
+    {0, PublicKeyDer} = PublicKeyInfo#'SubjectPublicKeyInfo'.subjectPublicKey,
+    PublicKey = public_key:der_decode('RSAPublicKey', PublicKeyDer),
+    PublicKey.
+
+create_encrypted_key(Cert, Key) ->
+    ok.
 
 create_recipient_info(Cert, EncryptedKey) when is_record(Cert, 'Certificate') ->
     #'RecipientInfo'{
        version = riVer0,
        issuerAndSerialNumber = create_issuer_and_serial_number(Cert),
-       keyEncryptionAlgorithm = get_key_encryption_algorithm(),
+       keyEncryptionAlgorithm = create_key_encryption_algorithm(),
        encryptedKey = EncryptedKey
       }.
 
