@@ -4,6 +4,8 @@ Chciałbym tutaj opisywać swoją przygodę przy przygotowywaniu fatfisha.
 
 prolog - przed 2014-12-08
 ===========================
+Na samym początku projektu walczyłem z protokołem SMTP i zastanawiałem się dlaczego moje maile nie dochodzą lub nie mogę się połączyć z serwerem. Wszyscy domowi dostawcy internetu są po banowani na filewallach jeśli chodzi o port 25. Dlatego wykupiłem VPSa, który te problemy rozwiązał. Poźniej pisałem swoją prostą libkę do mime i tu też nie było latwo. Metodą prób i błędów udało się wygenerować poprawna wiadomość. Jak miałem już opanowaną sytułacje z serwerem to zabrałem się za część kryptograficzną. 
+
 Najwięcej czytania i walki miałem z asn1. Jak udało mi się wygenerować implementacje w erlangu do CMS z rfc to okazało się, że jest to zbędne. Wtedy znalazłem gotowe bindingi pcks. Później systematycznie odtwarzam co te pola wewnatrz znaczą i jakie dane tam pownienem wpisać.
 Najwiekszym szokiem było odkrycie, że mogłem sie zbindować do openssla jak robią to wszyscy inni (i erlang też).
 Jest też tutaj ciekawe to, że duża cześć projektów bazuje na opensslu. Openssl jest jedynym 'wlasciwym' rozwiazaniem, o czym już się świat przekonał wiosną b.r. przy okazji [Heartbleed](https://en.wikipedia.org/wiki/Heartbleed).
