@@ -130,3 +130,13 @@ Plany:
 - zdekodowanie testowej wiadomości w erlangu
 - pisanie kodu
 
+
+2014-12-28
+===========
+
+Zadziwiające jest to, że od ostatniego wpisu nie mam większych problemów i po prostu piszę kod.
+Z mniejszych problemów to kolejny raz uderzył mnie brak w erlangu. Tym razem brak paddingów dla szyfrów blokowych. Jeśli chodzi o kodowanie to nie jest duży problem, przy dekodowaniu może być więcej zabawy (tylko to nie jest mi na razie potrzebne).
+
+Plany:
+- pisanie kodu
+
