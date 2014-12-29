@@ -81,7 +81,7 @@ dispatch_mime_field([Field|Fields], Separator, Output) ->
     dispatch_mime_field(Fields, Separator, NewOutput).
 
 dispatch_mime_field_attachment({content_transfer_encoding, Value}) ->
-    "Content-transfer-encoding: " ++ Value ++ ";\r\n";
+    "Content-transfer-encoding: " ++ Value ++ "\r\n";
 dispatch_mime_field_attachment({content_type, Value}) ->
     "Content-Type: " ++ Value ++ "; ";
 dispatch_mime_field_attachment({name, Value}) ->

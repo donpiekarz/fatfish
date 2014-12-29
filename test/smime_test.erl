@@ -211,5 +211,45 @@ chain_test() ->
            ],
     _MailBytes = mail:compose_mail(Mail).
 
+chain2_test() ->
+    Cert = get_cert_test(),
+    IncomingMsg = [
+		   {from, "<someone@gmail.com>"},
+		   {to, "<test@fatfish.pepiniera.net>"},
+		   {subject, "Hello test"},
+		   {body, "Hi, test!\r\nNice to meet you!\r\nKisses, Someone"}
+		  ],
+    IncomingBytes = mail:compose_mail(IncomingMsg),
 
+    Envelope = mail:compose_mail([
+				  {body_mime, 
+				   [
+				    {separator, "000SomeaaaRandomString000"},
+				    {body, "New mail for you"},
+				    {attchment, [
+						 {content_transfer_encoding, "base64"},
+						 {content_type, "application/octet-stream"},
+						 {name, "incoming.eml"},
+						 {data, base64:encode_to_string(IncomingBytes)}
+						]}
+				   ]
+				  }
+				 ]),
+    EnvelopedData = smime:create_enveloped_data(list_to_binary(Envelope), Cert),
+    Body = binary_to_list(base64:encode(smime:encode(EnvelopedData))),
+    {ok, Headers} = file:read_file(code:lib_dir(fatfish, priv) ++ "/templates/fatfish_mid.txt"), 
 
+    From = "<fatfish@fatfish.pepiniera.net>",
+    To =  "<koparka.czerwona@gmail.com>",
+
+    Mail = [
+            {from, From},
+            {to, To},
+            {subject, "INBOX"},
+	    {raw_headers, binary_to_list(Headers)},
+            {body, Body}
+           ],
+    MailBytes = mail:compose_mail(Mail),
+    MailBytes,
+    %file:write_file("/tmp/aaa", MailBytes),
+    ok.
