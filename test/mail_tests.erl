@@ -32,7 +32,7 @@ compose_mail_test()->
             ]
         }
     ],
-    Expect = "From: <aaa@bbb.com>\r\nTo: <ccc@ddd.com>\r\nSubject: testing\r\n\r\nContent-Type: multipart/mixed; boundary=\"000SomeRandomString000\"\r\n\r\n--000SomeRandomString000\r\nContent-Type: text/plain; charset=UTF-8\r\nHere's a picture of me\r\n\r\n\r\n--000SomeRandomString000\r\nContent-transfer-encoding: base64;\r\nContent-Type: application/octet-stream; name=\"PictureOfMe.png\"\r\n\r\nblablabla\r\n\r\n--000SomeRandomString000--\r\n",
+    Expect = "From: <aaa@bbb.com>\r\nTo: <ccc@ddd.com>\r\nSubject: testing\r\nMIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"000SomeRandomString000\"\r\n\r\n--000SomeRandomString000\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\nHere's a picture of me\r\n\r\n\r\n--000SomeRandomString000\r\nContent-transfer-encoding: base64;\r\nContent-Type: application/octet-stream; name=\"PictureOfMe.png\"\r\n\r\nblablabla\r\n\r\n--000SomeRandomString000--\r\n",
     Actual = mail:compose_mail(Mail),
     ?assertEqual(Expect, Actual).
 
@@ -41,5 +41,5 @@ compose_mail_test()->
 format_mail_test() ->
     S = "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890",
     ActualS = mail:format_mail(S),
-    ExpectS = "1234567890123456789012345678901234567890123456789012345678901234567890123456789\r\n01234567890",
+    ExpectS = "123456789012345678901234567890123456789012345678901234567890123456789012\r\n345678901234567890",
     ?assertEqual(ActualS, ExpectS).

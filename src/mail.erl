@@ -5,7 +5,7 @@
 
 
 compose_mail(Options)->
-    Fields = [from, to, subject, body, body_mime],
+    Fields = [from, to, subject, raw_headers, body, body_mime],
     compose_mail(Fields, Options, "").
 
 compose_mail([Field], Options, Output)->
@@ -30,7 +30,7 @@ format_mail(Str) ->
 split_string(_Str, _Start, Len, Result) when Len =< 0 ->
     lists:reverse(Result);
 split_string(Str, Start, Len, Result) when Len > 0->
-    LineLen = 79,
+    LineLen = 72,
     PartStr = string:substr(Str, Start, LineLen),
     split_string(Str, Start + LineLen, Len - LineLen, [PartStr|Result]).
 
@@ -40,6 +40,8 @@ dispatch_field({to, Value}, Output) ->
     Output ++ "To: " ++ Value ++ "\r\n";
 dispatch_field({subject, Value}, Output) ->
     Output ++ "Subject: " ++ Value ++ "\r\n";
+dispatch_field({raw_headers, Value}, Output) ->
+    Output ++ Value ++ "\r\n";
 dispatch_field({body, Value}, Output) ->
     Output ++ "\r\n" ++ format_mail(Value);
 dispatch_field({body_mime, Value}, Output) ->

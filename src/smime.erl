@@ -1,6 +1,6 @@
 -module(smime).
 
--export([encode/1, decorate/1, get_serial/1, get_public_key/1, create_encrypted_key/3, create_recipient_info/2, create_content_encryption_algorithm/2, 	 create_encrypted_content/4, create_encrypted_content_info/4, add_padding/2, create_enveloped_data/2]).
+-export([encode/1, get_serial/1, get_public_key/1, create_encrypted_key/3, create_recipient_info/2, create_content_encryption_algorithm/2, 	 create_encrypted_content/4, create_encrypted_content_info/4, add_padding/2, create_enveloped_data/2]).
 
 -include_lib("public_key/include/public_key.hrl").
 
@@ -61,12 +61,7 @@ add_padding_impl(Data, Pad, Missing) ->
 add_padding(BlockSize, Data) ->
     CurrentSize = byte_size(Data),
     Missing = BlockSize - CurrentSize rem BlockSize,
-    if 
-	Missing =:= BlockSize ->
-	    Data;
-	true ->
-	    add_padding_impl(Data, <<Missing>>, Missing)
-    end.
+    add_padding_impl(Data, <<Missing>>, Missing).
 
 create_encrypted_content(Data, des3_cbc, Key, Ivec) ->
     DataWithPadding = add_padding(8, Data),
@@ -97,16 +92,7 @@ encode(EnvelopedData) when is_record(EnvelopedData, 'EnvelopedData') ->
 		     contentType = {1,2,840,113549,1,7,3}, 	
 		     content = EnvelopedData
 		    },
-    'OTP-PUB-KEY':encode('ContentInfo', ContentInfo).
-
-
-decorate(EnvelopedData) when is_record(EnvelopedData, 'EnvelopedData') ->
-    {ok, Bytes} = encode(EnvelopedData),
-    Base64Bytes = base64:encode(Bytes),
-    {ok, Msg} = file:read_file(code:priv_dir(fatfish) ++ "/templates/fatfish_mid.txt"),
-    iolist_to_binary([Msg, Base64Bytes, <<"\r\n">>]).
-
-
-
+    {ok, Bytes} = 'OTP-PUB-KEY':encode('ContentInfo', ContentInfo),
+    Bytes.
 
 

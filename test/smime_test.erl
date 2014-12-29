@@ -46,13 +46,13 @@ create_recipient_info_test() ->
 
 get_encrypted_session_key1_test() ->
     get_test_file("/smime/1msg.enc.key1").
-    
+
 get_decrypted_session_key1_test() ->
     get_test_file("/smime/1msg.dec.key1").
 
 get_encrypted_session_key2_test() ->
     get_test_file("/smime/1msg.enc.key2").
-    
+
 get_decrypted_session_key2_test() ->
     get_test_file("/smime/1msg.dec.key2").
 
@@ -80,7 +80,7 @@ decrypt_data_test() ->
     Ivec = get_iv_test(),
     Plain = crypto:block_decrypt(des3_cbc, Key, Ivec, EncryptedData),
 
-    % hack for no handling for padding in block ciphers in Erlang/OTP
+						% hack for no handling for padding in block ciphers in Erlang/OTP
     PlainList = binary_to_list(Plain),
     DecryptedDataList = binary_to_list(DecryptedData),
     PlainNoPad = string:sub_string(PlainList, 1, 127),
@@ -107,8 +107,8 @@ rip_content_encryption_algorithm_test() ->
 rip_iv_test() ->
     ContentEncryptionAlgorithmIdentifier = rip_content_encryption_algorithm_test(),
     Parameters = ContentEncryptionAlgorithmIdentifier#'ContentEncryptionAlgorithmIdentifier'.parameters,
-    
-    % hack - asn1 unable to decode primitives
+
+						% hack - asn1 unable to decode primitives
     ActualIvec = list_to_binary(string:sub_string(binary_to_list(Parameters), 3)),
     ExpectedIvec = get_iv_test(),
     ?assertEqual(ExpectedIvec, ActualIvec).
@@ -132,7 +132,7 @@ get_recipient_info_test(N) ->
 rip_session_key_test() ->
     RecipientInfo1 = get_recipient_info_test(1),
     RecipientInfo2 = get_recipient_info_test(2), 
-    
+
     ActualEncryptedKey1 = list_to_binary(RecipientInfo1#'RecipientInfo'.encryptedKey),
     ActualEncryptedKey2 = list_to_binary(RecipientInfo2#'RecipientInfo'.encryptedKey),
 
@@ -177,26 +177,39 @@ add_padding_test() ->
     ?assertEqual(<<1,2,3,5,5,5,5,5>>, smime:add_padding(8, << 1, 2, 3 >>)),
     ?assertEqual(<<1,2,3,4,5,6,7,1>>, smime:add_padding(8, << 1, 2, 3, 4, 5, 6, 7 >>)),
     ?assertEqual(<<1,7,7,7,7,7,7,7>>, smime:add_padding(8, << 1 >>)),
-    ?assertEqual(<<>>, smime:add_padding(8, <<  >>)),
+    ?assertEqual(<<8,8,8,8,8,8,8,8>>, smime:add_padding(8, <<  >>)),
     ?assertEqual(<<1,2,3,4,5,6,7,8,9,7,7,7,7,7,7,7>>, smime:add_padding(8, << 1, 2, 3, 4, 5, 6, 7, 8, 9 >>)),
-    ?assertEqual(<<1,2,3,4,5,6,7,8>>, smime:add_padding(8, << 1, 2, 3, 4, 5, 6, 7, 8 >>)),
+    ?assertEqual(<<1,2,3,4,5,6,7,8,8,8,8,8,8,8,8,8>>, smime:add_padding(8, << 1, 2, 3, 4, 5, 6, 7, 8 >>)),
     ok.
 
 create_enveloped_data_test() ->
     Cert = get_cert_test(),
-    Data = <<"hejo heja, lecimy sobie tutaj z testow">>,
+    Data = <<"hejo heja, lecimy sobie tutaj z testow\r\n">>,
     ActualEnvelopedData = smime:create_enveloped_data(Data, Cert),
     ?assert(is_record(ActualEnvelopedData, 'EnvelopedData')),
     ActualEnvelopedData.
 
 encode_test() ->
     EnvelopedData = create_enveloped_data_test(),
-    {ok, Bytes} = smime:encode(EnvelopedData),
+    Bytes = smime:encode(EnvelopedData),
     ?assert(is_binary(Bytes)).
 
-decorate_test() ->
+chain_test() ->
     EnvelopedData = create_enveloped_data_test(),
-    Str = smime:decorate(EnvelopedData),
-    ?assert(is_binary(Str)).
+    Body = binary_to_list(base64:encode(smime:encode(EnvelopedData))),
+    {ok, Headers} = file:read_file(code:lib_dir(fatfish, priv) ++ "/templates/fatfish_mid.txt"), 
+
+    From = "<test@fatfish.pepiniera.net>",
+    To =  "<koparka.czerwona@gmail.com>",
+
+    Mail = [
+            {from, From},
+            {to, To},
+            {subject, "test case"},
+	    {raw_headers, binary_to_list(Headers)},
+            {body, Body}
+           ],
+    _MailBytes = mail:compose_mail(Mail).
+
 
 
