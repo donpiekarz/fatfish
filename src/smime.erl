@@ -103,7 +103,7 @@ encode(EnvelopedData) when is_record(EnvelopedData, 'EnvelopedData') ->
 decorate(EnvelopedData) when is_record(EnvelopedData, 'EnvelopedData') ->
     {ok, Bytes} = encode(EnvelopedData),
     Base64Bytes = base64:encode(Bytes),
-    {ok, Msg} = file:read_file("../priv/templates/fatfish_mid.txt"),
+    {ok, Msg} = file:read_file(code:priv_dir(fatfish) ++ "/templates/fatfish_mid.txt"),
     iolist_to_binary([Msg, Base64Bytes, <<"\r\n">>]).
 
 

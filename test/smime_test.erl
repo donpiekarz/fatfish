@@ -3,15 +3,18 @@
 -include_lib("public_key/include/public_key.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
+get_test_file(Path) ->
+    TruePath = code:lib_dir(fatfish, testdata) ++ Path,
+    {ok, Bytes} = file:read_file(TruePath),
+    Bytes.
 
 get_cert_test()->
-    io:fwrite("cwd: ~p~n", [file:get_cwd()]),
-    {ok, Bytes} = file:read_file("../testdata/certs/koparka.czerwona/cert.der"),
+    Bytes = get_test_file("/certs/koparka.czerwona/cert.der"),
     Cert = public_key:der_decode('Certificate', Bytes),
     Cert.
 
 get_private_key_test()->
-    {ok, Bytes} = file:read_file("../testdata/certs/koparka.czerwona/priv.pem"),
+    Bytes = get_test_file("/certs/koparka.czerwona/priv.pem"),
     PemList = public_key:pem_decode(Bytes),
     {'PrivateKeyInfo', PrivBytes, not_encrypted} = lists:keyfind('PrivateKeyInfo', 1, PemList),
     {'PrivateKeyInfo', v1, _PrivateKeyInfo_privateKeyAlgorithm, KeyBytes, asn1_NOVALUE} = public_key:der_decode('PrivateKeyInfo', PrivBytes),
@@ -42,21 +45,16 @@ create_recipient_info_test() ->
     ?assertEqual(Expected, Actual).
 
 get_encrypted_session_key1_test() ->
-    {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.key1"),
-    Bytes.
+    get_test_file("/smime/1msg.enc.key1").
     
 get_decrypted_session_key1_test() ->
-    {ok, Bytes} = file:read_file("../testdata/smime/1msg.dec.key1"),
-    Bytes.
-
+    get_test_file("/smime/1msg.dec.key1").
 
 get_encrypted_session_key2_test() ->
-    {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.key2"),
-    Bytes.
+    get_test_file("/smime/1msg.enc.key2").
     
 get_decrypted_session_key2_test() ->
-    {ok, Bytes} = file:read_file("../testdata/smime/1msg.dec.key2"),
-    Bytes.
+    get_test_file("/smime/1msg.dec.key2").
 
 decrypt_session_key_test() ->
     DecryptedKey = get_decrypted_session_key2_test(),
@@ -66,16 +64,13 @@ decrypt_session_key_test() ->
     ?assertEqual(DecryptedKey, Key).
 
 get_encrypted_data_test() ->
-    {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.data"),
-    Bytes.
+    get_test_file("/smime/1msg.enc.data").
 
 get_decrypted_data_test() ->
-    {ok, Bytes} = file:read_file("../testdata/smime/1msg.dec.data"),
-    Bytes.
+    get_test_file("/smime/1msg.dec.data").
 
 get_iv_test() ->
-    {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.iv"),
-    Bytes.
+    get_test_file("/smime/1msg.enc.iv").
 
 decrypt_data_test() ->
     DecryptedData = get_decrypted_data_test(),
@@ -94,7 +89,7 @@ decrypt_data_test() ->
 
 
 get_smime_message_test() ->
-    {ok, Bytes} = file:read_file("../testdata/smime/1msg.enc.p7m"),
+    Bytes = get_test_file("/smime/1msg.enc.p7m"),
     {ok, ContentInfo} = 'OTP-PUB-KEY':decode('ContentInfo', Bytes),
     ContentInfo.
 
@@ -203,21 +198,5 @@ decorate_test() ->
     EnvelopedData = create_enveloped_data_test(),
     Str = smime:decorate(EnvelopedData),
     ?assert(is_binary(Str)).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
