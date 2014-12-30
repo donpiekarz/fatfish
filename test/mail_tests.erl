@@ -19,7 +19,7 @@ compose_mail_test()->
         {from, "<aaa@bbb.com>"},
         {to, "<ccc@ddd.com>"},
         {subject, "testing"},
-        {body_mime, 
+        {body_mime,
             [
                 {separator, "000SomeRandomString000"},
                 {body, "Here's a picture of me"},

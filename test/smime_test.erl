@@ -80,7 +80,7 @@ decrypt_data_test() ->
     Ivec = get_iv_test(),
     Plain = crypto:block_decrypt(des3_cbc, Key, Ivec, EncryptedData),
 
-						% hack for no handling for padding in block ciphers in Erlang/OTP
+                                                % hack for no handling for padding in block ciphers in Erlang/OTP
     PlainList = binary_to_list(Plain),
     DecryptedDataList = binary_to_list(DecryptedData),
     PlainNoPad = string:sub_string(PlainList, 1, 127),
@@ -108,7 +108,7 @@ rip_iv_test() ->
     ContentEncryptionAlgorithmIdentifier = rip_content_encryption_algorithm_test(),
     Parameters = ContentEncryptionAlgorithmIdentifier#'ContentEncryptionAlgorithmIdentifier'.parameters,
 
-						% hack - asn1 unable to decode primitives
+                                                % hack - asn1 unable to decode primitives
     ActualIvec = list_to_binary(string:sub_string(binary_to_list(Parameters), 3)),
     ExpectedIvec = get_iv_test(),
     ?assertEqual(ExpectedIvec, ActualIvec).
@@ -131,7 +131,7 @@ get_recipient_info_test(N) ->
 
 rip_session_key_test() ->
     RecipientInfo1 = get_recipient_info_test(1),
-    RecipientInfo2 = get_recipient_info_test(2), 
+    RecipientInfo2 = get_recipient_info_test(2),
 
     ActualEncryptedKey1 = list_to_binary(RecipientInfo1#'RecipientInfo'.encryptedKey),
     ActualEncryptedKey2 = list_to_binary(RecipientInfo2#'RecipientInfo'.encryptedKey),
@@ -197,7 +197,7 @@ encode_test() ->
 chain_test() ->
     EnvelopedData = create_enveloped_data_test(),
     Body = binary_to_list(base64:encode(smime:encode(EnvelopedData))),
-    {ok, Headers} = file:read_file(code:lib_dir(fatfish, priv) ++ "/templates/fatfish_mid.txt"), 
+    {ok, Headers} = file:read_file(code:lib_dir(fatfish, priv) ++ "/templates/fatfish_mid.txt"),
 
     From = "<test@fatfish.pepiniera.net>",
     To =  "<koparka.czerwona@gmail.com>",
@@ -206,7 +206,7 @@ chain_test() ->
             {from, From},
             {to, To},
             {subject, "test case"},
-	    {raw_headers, binary_to_list(Headers)},
+            {raw_headers, binary_to_list(Headers)},
             {body, Body}
            ],
     _MailBytes = mail:compose_mail(Mail).
@@ -214,30 +214,30 @@ chain_test() ->
 chain2_test() ->
     Cert = get_cert_test(),
     IncomingMsg = [
-		   {from, "<someone@gmail.com>"},
-		   {to, "<test@fatfish.pepiniera.net>"},
-		   {subject, "Hello test"},
-		   {body, "Hi, test!\r\nNice to meet you!\r\nKisses, Someone"}
-		  ],
+                   {from, "<someone@gmail.com>"},
+                   {to, "<test@fatfish.pepiniera.net>"},
+                   {subject, "Hello test"},
+                   {body, "Hi, test!\r\nNice to meet you!\r\nKisses, Someone"}
+                  ],
     IncomingBytes = mail:compose_mail(IncomingMsg),
 
     Envelope = mail:compose_mail([
-				  {body_mime, 
-				   [
-				    {separator, "000SomeaaaRandomString000"},
-				    {body, "New mail for you"},
-				    {attchment, [
-						 {content_transfer_encoding, "base64"},
-						 {content_type, "application/octet-stream"},
-						 {name, "incoming.eml"},
-						 {data, base64:encode_to_string(IncomingBytes)}
-						]}
-				   ]
-				  }
-				 ]),
+                                  {body_mime,
+                                   [
+                                    {separator, "000SomeaaaRandomString000"},
+                                    {body, "New mail for you"},
+                                    {attchment, [
+                                                 {content_transfer_encoding, "base64"},
+                                                 {content_type, "application/octet-stream"},
+                                                 {name, "incoming.eml"},
+                                                 {data, base64:encode_to_string(IncomingBytes)}
+                                                ]}
+                                   ]
+                                  }
+                                 ]),
     EnvelopedData = smime:create_enveloped_data(list_to_binary(Envelope), Cert),
     Body = binary_to_list(base64:encode(smime:encode(EnvelopedData))),
-    {ok, Headers} = file:read_file(code:lib_dir(fatfish, priv) ++ "/templates/fatfish_mid.txt"), 
+    {ok, Headers} = file:read_file(code:lib_dir(fatfish, priv) ++ "/templates/fatfish_mid.txt"),
 
     From = "<fatfish@fatfish.pepiniera.net>",
     To =  "<koparka.czerwona@gmail.com>",
@@ -246,7 +246,7 @@ chain2_test() ->
             {from, From},
             {to, To},
             {subject, "INBOX"},
-	    {raw_headers, binary_to_list(Headers)},
+            {raw_headers, binary_to_list(Headers)},
             {body, Body}
            ],
     MailBytes = mail:compose_mail(Mail),
