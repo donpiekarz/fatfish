@@ -5,7 +5,8 @@
 
 -export([init/4, handle_HELO/2, handle_EHLO/3, handle_MAIL/2, handle_MAIL_extension/2,
          handle_RCPT/2, handle_RCPT_extension/2, handle_DATA/4, handle_RSET/1, handle_VRFY/2,
-         handle_other/3, handle_AUTH/4, handle_STARTTLS/1, code_change/3, terminate/2, relay/3]).
+         handle_other/3, handle_AUTH/4, handle_STARTTLS/1, code_change/3, terminate/2, relay/3,
+         wrap_message/2]).
 
 -define(RELAY, true).
 
@@ -72,6 +73,9 @@ handle_RCPT(<<"nobody@example.com">>, State) ->
 handle_RCPT(<<"test@fatfish.pepiniera.net">>, State) ->
     {ok, State};
 
+handle_RCPT(<<"koparka.czerwona@fatfish.pepiniera.net">>, State) ->
+    {ok, State};
+
 handle_RCPT(To, State) ->
     io:format("Mail to ~s~n", [To]),
                                                 % you can accept or reject RCPT TO addesses here, one per call
@@ -87,9 +91,9 @@ handle_RCPT_extension(Extension, _State) ->
 
 handle_DATA(_From, _To, <<>>, State) ->
     {error, "552 Message too small", State};
-handle_DATA(_From, _To, Data, State) ->
+handle_DATA(From, To, Data, State) ->
     Reference = lists:flatten([io_lib:format("~2.16.0b", [X]) || <<X>> <= erlang:md5(term_to_binary(erlang:now()))]),
-    case relay("<test@fatfish.pepiniera.net>", ["koparka.czerwona@gmail.com"], Data) of
+    case relay(From, To, Data) of
         ok ->
             {ok, Reference, State};
         _ ->
@@ -134,30 +138,48 @@ terminate(Reason, State) ->
 
 relay(_, [], _) ->
     ok;
-relay(From, [To|Rest], Data) ->
-    [_User, Host] = string:tokens(To, "@"),
-    Mail = mail:compose_mail([
-            {from, From},
-            {to, To},
-            {subject, "Mail from FatFish service"},
-            {body_mime, 
-                [
-                    {separator, "000SomeaaaRandomString000"},
-                    {body, "New mail for you"},
-                    {attchment, [
-                        {content_transfer_encoding, "base64"},
-                        {content_type, "application/octet-stream"},
-                        {name, "FatFishMail.eml"},
-                        {data, base64:encode_to_string(Data)}
-                        ]}
-                ]
-            }
-        ]),
+relay(From, [OldTo|Rest], Data) ->
+    io:fwrite("OldTo: ~p~n", [OldTo]),
+    To = fatfish_user:get_to(OldTo),
+    [_User, Host] = string:tokens(binary_to_list(To), "@"),
 
-    Envelope = {From, [To], Mail},
+    Envelope = {From, [To], wrap_message(To, Data)},
     Options = [
                {relay, Host}
               ],
-    gen_smtp_client:send_blocking(Envelope, Options),
-    %io:fwrite("send res: ~p~n", [Res]),
+    Res = gen_smtp_client:send_blocking(Envelope, Options),
+    io:fwrite("send res: ~p~n", [Res]),
     relay(From, Rest, Data).
+
+
+wrap_message(To, Payload) ->
+    EnvelopedDataPayload = mail:compose_mail([
+                                              {body_mime,
+                                               [
+                                                {separator, "000SomeaaaRandomString000"},
+                                                {body, "New mail for you"},
+                                                {attchment, [
+                                                             {content_transfer_encoding, "base64"},
+                                                             {content_type, "application/octet-stream"},
+                                                             {name, "incoming.eml"},
+                                                             {data, base64:encode_to_string(Payload)}
+                                                            ]}
+                                               ]
+                                              }
+                                             ]),
+    Cert = fatfish_user:get_cert(To),
+    EnvelopedData = smime:create_enveloped_data(list_to_binary(EnvelopedDataPayload), Cert),
+    Body = binary_to_list(base64:encode(smime:encode(EnvelopedData))),
+    {ok, Headers} = file:read_file(code:lib_dir(fatfish, priv) ++ "/templates/fatfish_mid.txt"),
+
+    From = "<fatfish@fatfish.pepiniera.net>",
+
+    Mail = [
+            {from, From},
+            {to, binary_to_list(To)},
+            {subject, "INBOX"},
+            {raw_headers, binary_to_list(Headers)},
+            {body, Body}
+           ],
+    MailBytes = mail:compose_mail(Mail),
+    MailBytes.
