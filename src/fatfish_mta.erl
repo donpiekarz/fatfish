@@ -76,6 +76,9 @@ handle_RCPT(<<"test@fatfish.pepiniera.net">>, State) ->
 handle_RCPT(<<"koparka.czerwona@fatfish.pepiniera.net">>, State) ->
     {ok, State};
 
+handle_RCPT(<<"koparka.niebieska@fatfish.pepiniera.net">>, State) ->
+    {ok, State};
+
 handle_RCPT(To, State) ->
     io:format("Mail to ~s~n", [To]),
                                                 % you can accept or reject RCPT TO addesses here, one per call
@@ -150,7 +153,6 @@ relay(From, [OldTo|Rest], Data) ->
     Res = gen_smtp_client:send_blocking(Envelope, Options),
     io:fwrite("send res: ~p~n", [Res]),
     relay(From, Rest, Data).
-
 
 wrap_message(To, Payload) ->
     EnvelopedDataPayload = mail:compose_mail([
