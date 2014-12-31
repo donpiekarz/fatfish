@@ -140,3 +140,23 @@ Z mniejszych problemów to kolejny raz uderzył mnie brak w erlangu. Tym razem b
 Plany:
 - pisanie kodu
 
+2014-12-31
+==========
+
+Stało się.
+
+Pierwsza wersja FatFisha jest na produkcji. Zrzut ekranu z Thunderbirda: https://dl.dropboxusercontent.com/u/7939953/fatfish/2.PNG
+
+Oczywiście nie obyło się bez problemów. Problemy mi robi rebar i skrypty generujące erlangowe releasy, dlatego postanowiłem to odpalić po prostu z konsoli. 
+Drugi, większy, problem to mały sprzeciw ze strony gmaila. Otóż okazuje się, że moja maszyna została zbanowana przez serwery googla, teoretycznie za spam, praktycznie za przesyłanie wiadomości ze swojego serwera na gmailowe. Dlatego pierwszy mail przechodzący przez FatFisha jest na interii. 
+
+Kolejny spell opensslowy, który wyświetla w formacie PEM klucz prywatny i certyfikat, bez szyfrowania.
+```
+openssl pkcs12 -in koparka.niebieska.p12 -nodes
+```
+
+Plany:
+- ogarnięcie tematu googla
+- temat releasow w erlangu
+- prostrze dodawanie użytkowników 
+
