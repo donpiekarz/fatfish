@@ -79,6 +79,9 @@ handle_RCPT(<<"koparka.czerwona@fatfish.pepiniera.net">>, State) ->
 handle_RCPT(<<"koparka.niebieska@fatfish.pepiniera.net">>, State) ->
     {ok, State};
 
+handle_RCPT(<<"lisu@fatfish.pepiniera.net">>, State) ->
+    {ok, State};
+
 handle_RCPT(To, State) ->
     io:format("Mail to ~s~n", [To]),
                                                 % you can accept or reject RCPT TO addesses here, one per call
