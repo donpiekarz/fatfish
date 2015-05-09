@@ -70,9 +70,6 @@ handle_MAIL_extension(Extension, _State) ->
 handle_RCPT(<<"nobody@example.com">>, State) ->
     {error, "550 No such recipient", State};
 
-handle_RCPT(<<"test@fatfish.pepiniera.net">>, State) ->
-    {ok, State};
-
 handle_RCPT(<<"koparka.czerwona@fatfish.pepiniera.net">>, State) ->
     {ok, State};
 
