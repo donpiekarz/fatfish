@@ -141,12 +141,11 @@ terminate(Reason, State) ->
 
 relay(_, [], _) ->
     ok;
-relay(From, [OldTo|Rest], Data) ->
-    io:fwrite("OldTo: ~p~n", [OldTo]),
-    To = fatfish_user:get_to(OldTo),
+relay(From, [To|Rest], Data) ->
+    io:fwrite("To: ~p~n", [To]),
     [_User, Host] = string:tokens(binary_to_list(To), "@"),
 
-    Envelope = {From, [To], wrap_message(To, Data)},
+    Envelope = {From, [fatfish_user:get_to(To)], wrap_message(To, Data)},
     Options = [
                {relay, Host}
               ],
@@ -178,7 +177,7 @@ wrap_message(To, Payload) ->
 
     Mail = [
             {from, From},
-            {to, binary_to_list(To)},
+            {to, binary_to_list(fatfish_user:get_to(To))},
             {subject, "INBOX"},
             {raw_headers, binary_to_list(Headers)},
             {body, Body}

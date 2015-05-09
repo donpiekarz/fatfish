@@ -2,7 +2,7 @@
 -include_lib("eunit/include/eunit.hrl").
 
 wrap_message_test() ->
-    To = <<"koparka.czerwona@gmail.com">>,
+    To = <<"koparka.czerwona@fatfish.pepiniera.net">>,
     IncomingMsg = [
                    {from, "<someone@gmail.com>"},
                    {to, binary_to_list(To)},

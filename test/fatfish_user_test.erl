@@ -7,5 +7,5 @@ get_to_test() ->
     ?assertEqual(<<"koparka.czerwona@gmail.com">>, fatfish_user:get_to(<<"koparka.czerwona@fatfish.pepiniera.net">>)).
 
 get_cert_test() ->
-    C = fatfish_user:get_cert(<<"koparka.czerwona@gmail.com">>),
+    C = fatfish_user:get_cert(<<"koparka.czerwona@fatfish.pepiniera.net">>),
     ?assert(is_record(C, 'Certificate')).

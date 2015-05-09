@@ -10,12 +10,13 @@ get_to(To) ->
     {ok, Mail} = maps:find(mail, Profile),
     Mail.
 
-get_cert(<<"koparka.czerwona@gmail.com">>) ->
-    load_cert("/certs/koparka.czerwona.cert.pem");
-get_cert(<<"koparka.niebieska@interia.pl">>) ->
-    load_cert("/certs/koparka.niebieska.cert.pem");
-get_cert(<<"9e93492e298bd310c9abfb37f102bee7@mail.com">>) ->
-    load_cert("/certs/9e93492e298bd310c9abfb37f102bee7.cert.pem").
+get_cert(To) ->
+    User = extract_user(To),
+    Profile = load_profile(User),
+    {ok, CertPemBytes} = maps:find(cert, Profile),
+    [{'Certificate', CertDerBytes,not_encrypted}] = public_key:pem_decode(CertPemBytes),
+    Cert = public_key:der_decode('Certificate', CertDerBytes),
+    Cert.
 
 extract_user(To) ->
     [User_list, Host_list] = string:tokens(binary_to_list(To), "@"),
@@ -31,17 +32,4 @@ load_profile(User) ->
     Path = list_to_binary(code:lib_dir(fatfish, priv) ++ "/users/" ++ User),
     {ok, [Profile]} = file:consult(Path),
     Profile.
-
-load_cert(Path) ->
-    {ok, Bytes} = file:read_file(code:lib_dir(fatfish, priv) ++ Path),
-    [{'Certificate', CertBytes, not_encrypted}] = public_key:pem_decode(Bytes),
-    Cert = public_key:der_decode('Certificate', CertBytes),
-    Cert.
-
-
-
-
-
-
-
 
