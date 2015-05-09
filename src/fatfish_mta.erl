@@ -138,7 +138,7 @@ relay(_, [], _) ->
     ok;
 relay(From, [To|Rest], Data) ->
     io:fwrite("To: ~p~n", [To]),
-    [_User, Host] = string:tokens(binary_to_list(To), "@"),
+    [_User, Host] = string:tokens(binary_to_list(fatfish_user:get_to(To)), "@"),
 
     Envelope = {From, [fatfish_user:get_to(To)], wrap_message(To, Data)},
     Options = [
