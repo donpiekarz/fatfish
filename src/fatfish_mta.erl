@@ -70,19 +70,14 @@ handle_MAIL_extension(Extension, _State) ->
 handle_RCPT(<<"nobody@example.com">>, State) ->
     {error, "550 No such recipient", State};
 
-handle_RCPT(<<"koparka.czerwona@fatfish.pepiniera.net">>, State) ->
-    {ok, State};
-
-handle_RCPT(<<"koparka.niebieska@fatfish.pepiniera.net">>, State) ->
-    {ok, State};
-
-handle_RCPT(<<"lisu@fatfish.pepiniera.net">>, State) ->
-    {ok, State};
-
 handle_RCPT(To, State) ->
     io:format("Mail to ~s~n", [To]),
-                                                % you can accept or reject RCPT TO addesses here, one per call
-    {error, "550 No Such User", State }.
+    case fatfish_user:check_user(To) of
+	ok ->
+	    {ok, State};
+	_Else ->
+	    {error, "550 No Such User", State}
+    end.
 
 handle_RCPT_extension(<<"X-SomeExtension">> = Extension, State) ->
                                                 % any RCPT TO extensions can be handled here

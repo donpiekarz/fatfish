@@ -1,8 +1,26 @@
 -module(fatfish_user).
 
--export([get_to/1, get_cert/1]).
+-export([check_user/1, get_to/1, get_cert/1]).
 
 -include_lib("eunit/include/eunit.hrl").
+
+check_user(To) ->
+    [_User_list, Host_list] = string:tokens(binary_to_list(To), "@"),
+    case Host_list of
+	"fatfish.pepiniera.net" ->
+	    User = extract_user(To),
+	    Path = list_to_binary(code:lib_dir(fatfish, priv) ++ "/users/" ++ User),
+	    case filelib:is_regular(Path) of
+		true ->
+		    ok;
+		_Other ->
+		    err
+	    end;
+	_Other ->
+	    err
+    end.
+					
+    
 
 get_to(To) ->
     User = extract_user(To),
