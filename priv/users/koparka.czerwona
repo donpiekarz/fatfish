@@ -1,7 +1,6 @@
 #{
   mail => <<"koparka.czerwona@gmail.com">>,
-  cert => <<"
------BEGIN CERTIFICATE-----
+  cert => <<"-----BEGIN CERTIFICATE-----
 MIIFQDCCBCigAwIBAgIRALW98lkUbiBxkvHeR941M/EwDQYJKoZIhvcNAQELBQAw
 gZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAO
 BgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYD

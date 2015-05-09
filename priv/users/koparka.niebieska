@@ -1,7 +1,6 @@
 #{
   mail => <<"koparka.niebieska@interia.pl">>,
-  cert => <<"
------BEGIN CERTIFICATE-----
+  cert => <<"-----BEGIN CERTIFICATE-----
 MIIFQzCCBCugAwIBAgIQSTqq3cawlCn0dZfOxQ8+qDANBgkqhkiG9w0BAQsFADCB
 lzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4G
 A1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNV
